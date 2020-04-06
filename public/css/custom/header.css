@@ -1,0 +1,46 @@
+/*Header*/
+.navbar{
+    padding: 0;
+}
+.navbar-toggler{
+    margin-right: 30px;
+}
+#navbar-div{
+    height: 100%;
+}
+    /*Logo*/
+    #logo{
+        margin-left: 10px;
+        height: 100%;
+    }
+    #logo-div{
+        height: 100%;
+    }
+    #logo-div > img{
+        height: 100%;
+    }
+    /*Menu*/
+    #menu{
+        z-index: 1;
+    }
+
+    #menu > ul> li{
+        text-transform: uppercase;
+        color: white!important;
+        margin-left: 10px;
+        font-size: 1rem;
+    }
+    #menu > hr{
+        border-color:white;
+        margin: 0;
+    }
+    .navbar-light .navbar-nav .nav-link{
+        color: white;
+    }
+    .navbar-light .navbar-nav .nav-link:hover{
+        color:orangered;
+    }
+    /*Colapsar*/
+    #botao-navbar{
+        border-color: white;
+    }

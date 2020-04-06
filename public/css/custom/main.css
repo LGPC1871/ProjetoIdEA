@@ -1,0 +1,7 @@
+/*Main*/
+#titulo{
+    text-transform: uppercase;
+}
+#titulo > hr{
+    border-color: gray;
+}
