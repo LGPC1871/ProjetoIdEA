@@ -9,5 +9,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <hr>
             </div>
         </div>
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <a href="<?=base_url('users/logout')?>">
+                    <button class="btn btn-danger">Sair</button>
+                </a>
+            </div>
+        </div>
     </div>
 </main>

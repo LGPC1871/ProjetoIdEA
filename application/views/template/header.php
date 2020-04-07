@@ -42,10 +42,7 @@ $diretorio = base_url();
                             <a class="nav-link" href="<?=$diretorio?>eventos" >Eventos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?=$diretorio?>login" >Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?=$diretorio?>cadastro" >Cadastro</a>
+                            <a class="nav-link" href="<?=$diretorio?>users" >Login</a>
                         </li>
                     </ul>
                 </div>
