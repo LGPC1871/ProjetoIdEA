@@ -10,13 +10,22 @@ $diretorio = base_url();
     <script type="text/javascript" src="<?=$diretorio?>/public/js/bootstrap.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="<?=$diretorio?>/public/css/bootstrap/bootstrap.css">
+    <!--Font Awesome-->
+    <script src="https://kit.fontawesome.com/09f0e3d5de.js" crossorigin="anonymous"></script>
     <!--Custom CSS stylesheet-->
     <link rel="stylesheet" href="<?=$diretorio?>/public/css/custom/style.css">
-    <link rel="stylesheet" href="<?=$diretorio?>/public/css/custom/login.css">
+    <!--<link rel="stylesheet" href="<?=$diretorio?>/public/css/custom/login.css">-->
     <link rel="stylesheet" href="<?=$diretorio?>/public/css/custom/header.css">
     <link rel="stylesheet" href="<?=$diretorio?>/public/css/custom/main.css">
     <link rel="stylesheet" href="<?=$diretorio?>/public/css/custom/footer.css">
-    
+    <!--Custom Unique CSS stylesheet-->
+    <?php if(isset($styles)): ?>
+        <?php foreach($styles as $style_name): ?>
+            <?php $href = base_url() . "public/css/custom/" . $style_name ?>
+            <link href="<?=$href?>" rel="stylesheet">
+        <?php endforeach ?>
+    <?php endif ?>
+
     <title>IdEA</title>
 </head>
 <body>
@@ -42,7 +51,7 @@ $diretorio = base_url();
                             <a class="nav-link" href="<?=$diretorio?>eventos" >Eventos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?=$diretorio?>users" >Login</a>
+                            <a class="nav-link" href="<?=$diretorio?>Admin" >Área Restrita</a>
                         </li>
                     </ul>
                 </div>
