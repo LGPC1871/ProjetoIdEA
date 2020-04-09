@@ -16,17 +16,13 @@ class User extends CI_Model{
                 $this->db->where($chave, $valor);
             } 
         }
-        if(array_key_exists("returnType",$params) && $params['returnType'] == 'count'){ /*Essa linha não tem uso real nesse caso, retirar depois */
-            $result = $this->db->count_all_results(); 
-        }else{
-            if(array_key_exists("id", $params) || $params['returnType'] == 'single'){
-                if(!empty($params['id'])){ 
-                    $this->db->where('A_id', $params['id']); 
-                } 
-                $query = $this->db->get(); 
-                $result = $query->row_array(); 
-            }
+        if(array_key_exists("id", $params) || $params['returnType'] == 'single'){
+            if(!empty($params['id'])){ 
+                $this->db->where('A_id', $params['id']); 
+            } 
+            $query = $this->db->get(); 
+            $result = $query->row_array(); 
+            return $result;
         }
-        return $result;
     }
 }

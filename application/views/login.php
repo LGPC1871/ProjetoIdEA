@@ -18,12 +18,12 @@
                         <hr>
                     </div>
                     <div class="form-group text-center">
-                        <div class="login-helper">
-                            <span class="help-block">Insira suas Credenciais de Administrador</span>
+                        <div class="login-helper no-error">
+                            <span class="help-block"><i class="fas fa-info-circle fa-lg"></i> Insira suas Credenciais de Administrador</span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="username">Usuário</label>
+                        <label for="username">Username</label>
                         <input type="text" class="form-control" name="username" id="nome" placeholder="Digite seu nome de usuário">
                     </div>
                     <div class="form-group">
