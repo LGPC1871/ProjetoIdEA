@@ -43,7 +43,6 @@ function tipoErro(tipo, id){
     }
 }
 function showErrors(error_list) {
-    console.log(error_list);
 	clearErrors();
 	loginHelperErrors(1);
 

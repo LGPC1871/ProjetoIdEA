@@ -47,6 +47,7 @@ class Admin extends CI_Controller{
         $password = $this->input->post("password");
         
         //Se o botao login for acionado
+        
         if(empty($username) || empty($password)){
             $json["status"] = 1;
             if(empty($password))
@@ -61,19 +62,19 @@ class Admin extends CI_Controller{
             if($this->form_validation->run() == true){
                 $this->load->model('user'); 
 
-                $conditions = array(
-                    'returnType' => 'single',
-                    'conditions' => array(
-                        'A_userName' => $username,
-                        'A_password' => $password,
-                    )
-                );
-
-                $result = $this->user->getRows($conditions);
+                $result = $this->user->getUserData($username);
                 
                 if($result){
-                    $this->session->set_userdata('isUserLoggedIn', true);
-                    $this->session->set_userdata('userId', $result['A_id']);
+                    
+                    $userId = $result->A_id;
+                    $passwordHash = $result->A_password;
+
+                    if(password_verify($password, $passwordHash)){
+                        $this->session->set_userdata('isUserLoggedIn', true);
+                        $this->session->set_userdata('userId', $userId);
+                    }else{
+                        $json["status"] = 1;
+                    }
                 }else{
                     $json["status"] = 1;
                 }
@@ -81,7 +82,7 @@ class Admin extends CI_Controller{
                 $json["status"] = 1;
                 }
             if($json["status"] == 1){
-                $json["error_list"]["#botaoLogin"] = "Usuário e/ou Senha incorretos!";
+                $json["error_list"]["#botaoLogin"] = "";
             }
         }
         echo json_encode($json);

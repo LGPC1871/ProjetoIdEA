@@ -7,22 +7,16 @@ class User extends CI_Model{
         $this->table= 'a_users';
     }
 
-    function getRows($params = array()){
-        $this->db->select('*'); 
-        $this->db->from($this->table);
+    function getUserData($username){
+        $this->db->select('*')
+                ->from($this->table)
+                ->where('A_userName', $username);
+        
+        $result = $this->db->get();
 
-        if(array_key_exists("conditions", $params)){ 
-            foreach($params['conditions'] as $chave => $valor){ 
-                $this->db->where($chave, $valor);
-            } 
-        }
-        if(array_key_exists("id", $params) || $params['returnType'] == 'single'){
-            if(!empty($params['id'])){ 
-                $this->db->where('A_id', $params['id']); 
-            } 
-            $query = $this->db->get(); 
-            $result = $query->row_array(); 
-            return $result;
-        }
+        if($result->num_rows() > 0)
+            return $result->row();
+        else
+            return null;
     }
 }
