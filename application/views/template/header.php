@@ -48,10 +48,7 @@ $diretorio = base_url();
                     <hr>
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="<?=$diretorio?>eventos" >Eventos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?=$diretorio?>Admin" >Área Restrita</a>
+                            <a class="nav-link" href="<?=$diretorio?>Admin">Área do Operador</a>
                         </li>
                     </ul>
                 </div>

@@ -1,0 +1,1 @@
+INSERT INTO `projetoidea`.`aa_users` (`AA_username`, `AA_password`) VALUES ('admin', '$2y$10$wB36b0oXZDyPK/uptfxH6ebNo3JgbVtitEQ5xFR/AB3apBEBw4S3y');

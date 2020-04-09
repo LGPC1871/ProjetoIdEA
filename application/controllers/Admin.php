@@ -66,8 +66,8 @@ class Admin extends CI_Controller{
                 
                 if($result){
                     
-                    $userId = $result->A_id;
-                    $passwordHash = $result->A_password;
+                    $userId = $result->AA_id;
+                    $passwordHash = $result->AA_password;
 
                     if(password_verify($password, $passwordHash)){
                         $this->session->set_userdata('isUserLoggedIn', true);

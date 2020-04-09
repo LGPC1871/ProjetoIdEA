@@ -4,13 +4,13 @@ class User extends CI_Model{
     function __construct(){
         parent::__construct();
 
-        $this->table= 'a_users';
+        $this->table= 'aa_users';
     }
 
     function getUserData($username){
         $this->db->select('*')
                 ->from($this->table)
-                ->where('A_userName', $username);
+                ->where('AA_username', $username);
         
         $result = $this->db->get();
 
