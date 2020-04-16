@@ -1,22 +1,17 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed'); 
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 
-class User extends CI_Model{
-    function __construct(){
-        parent::__construct();
-
-        $this->table= 'aa_users';
+class User extends CI_Model {
+    function __construct() { 
+        // Set table name 
+        $this->table = 'AA_pessoa'; 
     }
 
-    function getUserData($username){
-        $this->db->select('*')
-                ->from($this->table)
-                ->where('AA_username', $username);
-        
-        $result = $this->db->get();
-
-        if($result->num_rows() > 0)
-            return $result->row();
-        else
-            return null;
+    public function insert($data = array()){
+        if(!empty($data)){
+            $result = $this->db->insert($this->table, $data);
+            return $result?$this->db->insert_id():false;
+        }
+        return false;
     }
 }
