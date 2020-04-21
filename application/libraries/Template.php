@@ -5,6 +5,9 @@ class Template {
 		function show($view, $data=array()){
  
 			$CI = & get_instance();
+			
+			// Load head
+			$CI->load->view('template/head',$data);
  
 			// Load header
 			$CI->load->view('template/header',$data);
