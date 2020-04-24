@@ -7,6 +7,10 @@ class User extends CI_Controller{
         $this->load->library('google');
         $this->config->load('google');
     }
+    
+    private function echoUserData($userData){
+        echo json_encode($userData);
+    }
    
     public function index(){
         if($this->session->userdata('loggedIn') == true){
@@ -24,7 +28,7 @@ class User extends CI_Controller{
         $this->template->show('login.php', $content);
     }
 
-    public function gLogin(){
+    public function googleAjaxLogin(){
         if (!$this->input->is_ajax_request()) {
 			exit("Nenhum acesso de script direto permitido!");
         }
@@ -45,18 +49,24 @@ class User extends CI_Controller{
             foreach($config['scopes'] as $scope){
                 $client->addScope($scope);
             }
-        
-            $payload = $client->verifyIdToken($_POST['userToken']);
+            
+        $userToken = $_POST['userToken'];
 
-            if($payload){
-                
-                $userData = array(
-                    //payload userdata
-                );
-            }else{
-                //Token Inválido
-            }
+        $payload = $client->verifyIdToken($userToken);
 
-        echo json_encode($payload);
+        if($payload){
+            $userData = array(
+                "user_id" => $payload['sub'],
+                "user_email" => $payload['email'],
+                "user_emailVerified" => $payload['email_verified'],
+                "user_fullName" => $payload['name'],
+                "user_firstName" => $payload['given_name'],
+                "user_lastName" => $payload['family_name']
+            );
+            
+            $this->echoUserData($userData);
+        }else{
+            //Token Inválido
+        }
     }
 }
