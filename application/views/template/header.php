@@ -21,7 +21,7 @@ $diretorio = base_url();
                     <hr>
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="<?=$diretorio?>users">Conta</a>
+                            <a class="nav-link" href="<?=$diretorio?>user">Conta</a>
                         </li>
                     </ul>
                 </div>
