@@ -52,21 +52,41 @@ class User extends CI_Controller{
             
         $userToken = $_POST['userToken'];
 
+        $result = $this->verifyGoogleUserData($client, $userToken);
+        
+        if(!isset($result['Erro'])){
+            
+        }else{
+            $this->echoUserData($result);
+        }
+    }
+
+    private function verifyGoogleUserData($client, $userToken){
+        $erros = array();
+
         $payload = $client->verifyIdToken($userToken);
 
         if($payload){
-            $userData = array(
-                "user_id" => $payload['sub'],
-                "user_email" => $payload['email'],
-                "user_emailVerified" => $payload['email_verified'],
-                "user_fullName" => $payload['name'],
-                "user_firstName" => $payload['given_name'],
-                "user_lastName" => $payload['family_name']
-            );
-            
-            $this->echoUserData($userData);
+            if($payload['email_verified']){
+                if($payload['name'] != ""){
+                    $userData = array(
+                        "user_id" => $payload['sub'],
+                        "user_email" => $payload['email'],
+                        "user_fullName" => $payload['name'],
+                        "user_firstName" => $payload['given_name'],
+                        "user_lastName" => $payload['family_name'],
+                        "user_picture" => $payload['picture']
+                    );
+                    return $userData;
+                }else{
+                    $erros['Erro'] = "Erro: nome invalido!";
+                }
+            }else{
+                $erros['Erro'] = "Falha na verificao do Email!";
+            }
         }else{
-            //Token Inválido
+            $erros['Erro'] = "Token Invalido!";
         }
+        return $erros;
     }
 }

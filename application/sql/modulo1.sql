@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`AA_pessoa` (
   `AA_firstName` VARCHAR(100) NOT NULL,
   `AA_lastName` VARCHAR(155) NOT NULL,
   PRIMARY KEY (`AA_userId`),
-  UNIQUE INDEX `AA_email_UNIQUE` (`AA_email` ASC) VISIBLE,
-  UNIQUE INDEX `AA_googleId_UNIQUE` (`AA_googleId` ASC) VISIBLE)
+  UNIQUE INDEX `AA_email_UNIQUE` (`AA_email` ASC),
+  UNIQUE INDEX `AA_googleId_UNIQUE` (`AA_googleId` ASC))
 ENGINE = InnoDB;
 
 
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`AB_admin` (
   `AB_id` INT NOT NULL AUTO_INCREMENT,
   `AA_id` INT NOT NULL,
   PRIMARY KEY (`AB_id`, `AA_id`),
-  INDEX `fk_AB_admin_AA_pessoa_idx` (`AA_id` ASC) VISIBLE,
+  INDEX `fk_AB_admin_AA_pessoa_idx` (`AA_id` ASC),
   CONSTRAINT `fk_AB_admin_AA_pessoa`
     FOREIGN KEY (`AA_id`)
     REFERENCES `mydb`.`AA_pessoa` (`AA_userId`)
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`AC_palestrante` (
   `AC_id` INT NOT NULL AUTO_INCREMENT,
   `AA_id` INT NOT NULL,
   PRIMARY KEY (`AC_id`, `AA_id`),
-  INDEX `fk_AC_palestrante_AA_pessoa1_idx` (`AA_id` ASC) VISIBLE,
+  INDEX `fk_AC_palestrante_AA_pessoa1_idx` (`AA_id` ASC),
   CONSTRAINT `fk_AC_palestrante_AA_pessoa1`
     FOREIGN KEY (`AA_id`)
     REFERENCES `mydb`.`AA_pessoa` (`AA_userId`)
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`AD_participante` (
   `AD_id` INT NOT NULL AUTO_INCREMENT,
   `AA_id` INT NOT NULL,
   PRIMARY KEY (`AD_id`, `AA_id`),
-  INDEX `fk_AD_participante_AA_pessoa1_idx` (`AA_id` ASC) VISIBLE,
+  INDEX `fk_AD_participante_AA_pessoa1_idx` (`AA_id` ASC),
   CONSTRAINT `fk_AD_participante_AA_pessoa1`
     FOREIGN KEY (`AA_id`)
     REFERENCES `mydb`.`AA_pessoa` (`AA_userId`)
