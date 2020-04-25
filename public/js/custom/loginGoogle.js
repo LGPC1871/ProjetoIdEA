@@ -1,14 +1,23 @@
 function onSignIn(googleUser) {
-    let profile = googleUser.getBasicProfile();
-    let userId = profile.getId();
-    let userToken = profile.getAuthResponse().id_token;
-    let userName = profile.getName();
-    let userEmail = profile.getName();
-    let userPicture = profile.getImageUrl();
+    var userToken = googleUser.getAuthResponse().id_token;
+    
+    var userData = {
+        userToken: userToken
+    }
 
+    sendUserTokenToBackend(userData);
+}
 
-    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-    console.log('Name: ' + profile.getName());
-    console.log('Image URL: ' + profile.getImageUrl());
-    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+function sendUserTokenToBackend(userData){
+    $.ajax({
+        'url': BASE_URL + 'user/googleAjaxLogin',
+        'type': 'POST',
+        'data': userData,
+        'success': function(json){
+            window.location = BASE_URL + "user/profile";
+        },
+        'error': function(){
+            console.log('triste...')
+        }
+      })
 }
