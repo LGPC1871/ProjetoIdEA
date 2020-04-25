@@ -7,6 +7,7 @@ class User extends CI_Controller{
         $this->load->library('google');
         $this->config->load('google');
         $this->load->model('users');
+        $this->load->library('form_validation');  
     }
     
     private function echoUserData($userData){
@@ -23,14 +24,73 @@ class User extends CI_Controller{
 
     public function login(){
         $content = array(
-            "headScripts" => array("https://apis.google.com/js/platform.js"),
-            "scripts" => array("loginGoogle.js", "util.js"),
+            "styles" => array('login.css'),
+            "headScripts" => array("https://apis.google.com/js/platform.js", "https://apis.google.com/js/platform.js?onload=renderButton"),
+            "scripts" => array("loginGoogle.js", "loginPadrao.js", "util.js"),
         );
         $this->template->show('login.php', $content);
     }
 
     public function profile(){
-        $this->template->show('profile.php');
+        if($this->session->userdata('loggedIn') == true){
+            $this->template->show('profile.php');
+        }else{
+            redirect('user/index');
+        }
+    }
+
+    public function loginAjax(){
+        if (!$this->input->is_ajax_request()) {
+			exit("Nenhum acesso de script direto permitido!");
+		}
+        //Adicionando variavel json para usar no ajax
+        $json = array();
+        $json["status"] = 0; //sinaliza se há erros (0-nao 1-sim)
+        $json["error_list"] = array();
+
+        //Recolhe informacoes do formulario;
+        $email = $this->input->post("email");
+        $password = $this->input->post("password");
+        
+        //Se o botao login for acionado
+        
+        if(empty($email) || empty($password)){
+            $json["status"] = 1;
+            if(empty($password))
+                $json["error_list"]["#senha"] = "";
+            if(empty($email))
+                $json["error_list"]["#email"] = "";
+        }else{
+            
+            $this->form_validation->set_rules('email', 'Email', 'required');
+            $this->form_validation->set_rules('password', 'Senha', 'required');
+
+            if($this->form_validation->run() == true){
+
+                $result = $this->users->getUserData($email);
+                
+                if($result){
+                    
+                    $userEmail = $result->AA_email;
+                    $passwordHash = $result->AA_password;
+
+                    if(password_verify($password, $passwordHash)){
+                        $this->session->set_userdata('loggedIn', true);
+                        $this->session->set_userdata('userData', $result);
+                    }else{
+                        $json["status"] = 1;
+                    }
+                }else{
+                    $json["status"] = 1;
+                }
+            }else{
+                $json["status"] = 1;
+                }
+            if($json["status"] == 1){
+                $json["error_list"]["#botaoLogin"] = "";
+            }
+        }
+        echo json_encode($json);
     }
 
     public function googleAjaxLogin(){

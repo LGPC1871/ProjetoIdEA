@@ -21,10 +21,22 @@ class Users extends CI_Model{
 
     function updateUserData($userData){
         $this->db->where('AA_googleId', $userData['AA_googleId']);
-        $this->db->update('AA_pessoa', $userData);
+        $this->db->update($this->pessoa, $userData);
     }
 
     function insertUserData($userData){
-        $this->db->insert('AA_pessoa', $userData);
+        $this->db->insert($this->pessoa, $userData);
+    }
+
+    function getUserData($userEmail){
+        $this->db->select('*')
+                 ->from($this->pessoa)
+                 ->where('AA_email', $userEmail);
+        $result = $this->db->get();
+
+        if($result->num_rows() > 0)
+            return $result->row();
+        else
+            return null;
     }
 }
