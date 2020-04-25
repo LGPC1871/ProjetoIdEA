@@ -6,6 +6,7 @@ class User extends CI_Controller{
         parent::__construct();
         $this->load->library('google');
         $this->config->load('google');
+        $this->load->model('users');
     }
     
     private function echoUserData($userData){
@@ -26,6 +27,10 @@ class User extends CI_Controller{
             "scripts" => array("loginGoogle.js", "util.js"),
         );
         $this->template->show('login.php', $content);
+    }
+
+    public function profile(){
+        $this->template->show('profile.php');
     }
 
     public function googleAjaxLogin(){
@@ -52,12 +57,25 @@ class User extends CI_Controller{
             
         $userToken = $_POST['userToken'];
 
-        $result = $this->verifyGoogleUserData($client, $userToken);
+        $data = $this->verifyGoogleUserData($client, $userToken);
         
-        if(!isset($result['Erro'])){
-            
+        if(!isset($data['Erro'])){
+            $userExist = $this->users->userExists($data['AA_googleId']);
+
+            if($userExist){
+                $data['AA_updated'] = date("Y-m-d H:i:s");
+                $this->users->updateUserData($data);
+            }else{
+                $data['AA_created'] = date("Y-m-d H:i:s");
+                $data['AA_updated'] = date("Y-m-d H:i:s");
+                $this->users->insertUserData($data);
+            }
+            $this->session->set_userdata('loggedIn', true);
+            $this->session->set_userdata('userData', $data);
+            $this->echoUserData("Entrando...");
         }else{
-            $this->echoUserData($result);
+            //CASO OCORRA ALGUM ERRO
+            $this->echoUserData($data);
         }
     }
 
@@ -70,12 +88,12 @@ class User extends CI_Controller{
             if($payload['email_verified']){
                 if($payload['name'] != ""){
                     $userData = array(
-                        "user_id" => $payload['sub'],
-                        "user_email" => $payload['email'],
-                        "user_fullName" => $payload['name'],
-                        "user_firstName" => $payload['given_name'],
-                        "user_lastName" => $payload['family_name'],
-                        "user_picture" => $payload['picture']
+                        'AA_googleId' => $payload['sub'],
+                        'AA_email' => $payload['email'],
+                        'AA_fullName' => $payload['name'],
+                        'AA_firstName' => $payload['given_name'],
+                        'AA_lastName' => $payload['family_name'],
+                        'AA_picture' => $payload['picture'],
                     );
                     return $userData;
                 }else{
@@ -88,5 +106,14 @@ class User extends CI_Controller{
             $erros['Erro'] = "Token Invalido!";
         }
         return $erros;
+    }
+
+    public function userLogout(){
+        $this->session->set_userdata('loggedIn', false);
+        $this->session->unset_userdata('userData');
+
+        $this->session->sess_destroy();
+
+        redirect('user');
     }
 }

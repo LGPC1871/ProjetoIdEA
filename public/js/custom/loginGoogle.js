@@ -14,7 +14,7 @@ function sendUserTokenToBackend(userData){
         'type': 'POST',
         'data': userData,
         'success': function(json){
-            console.log(json)
+            window.location = BASE_URL + "user/profile";
         },
         'error': function(){
             console.log('triste...')

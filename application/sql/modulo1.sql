@@ -20,17 +20,20 @@ USE `mydb` ;
 -- -----------------------------------------------------
 -- Table `mydb`.`AA_pessoa`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`AA_pessoa` (
-  `AA_userId` INT NOT NULL AUTO_INCREMENT,
-  `AA_googleId` INT NOT NULL,
-  `AA_email` VARCHAR(255) NOT NULL,
-  `AA_fullName` VARCHAR(255) NOT NULL,
-  `AA_firstName` VARCHAR(100) NOT NULL,
-  `AA_lastName` VARCHAR(155) NOT NULL,
+CREATE TABLE `AA_pessoa` (
+  `AA_userId` int(11) NOT NULL AUTO_INCREMENT,
+  `AA_googleId` varchar(50) NOT NULL,
+  `AA_email` varchar(255) NOT NULL,
+  `AA_fullName` varchar(255) NOT NULL,
+  `AA_firstName` varchar(100) DEFAULT NULL,
+  `AA_lastName` varchar(155) DEFAULT NULL,
+  `AA_picture` varchar(255) DEFAULT NULL,
+  `AA_created` datetime NOT NULL,
+  `AA_updated` datetime NOT NULL,
   PRIMARY KEY (`AA_userId`),
-  UNIQUE INDEX `AA_email_UNIQUE` (`AA_email` ASC),
-  UNIQUE INDEX `AA_googleId_UNIQUE` (`AA_googleId` ASC))
-ENGINE = InnoDB;
+  UNIQUE KEY `AA_email_UNIQUE` (`AA_email`),
+  UNIQUE KEY `AA_googleId_UNIQUE` (`AA_googleId`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
 
 
 -- -----------------------------------------------------

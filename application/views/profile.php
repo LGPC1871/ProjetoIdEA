@@ -1,3 +1,7 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+$diretorio = base_url();
+?>
 <main>
     <div class="container">
         <div class="row justify-content-center">
@@ -7,7 +11,7 @@
             </div>
         </div>
         <div class="row justify-content-center">
-            teste
+            <a href="<?=$diretorio?>user/userLogout" class="btn btn-danger">Sair</a>
         </div>
     </div>
 </main>
