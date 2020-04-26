@@ -6,7 +6,7 @@ Declaração de Constantes
 const MENSAGEM_LOGIN_ERRO_USER =        "Email Inválido";
 const MENSAGEM_LOGIN_ERRO_PASSWORD =    "Senha Inválida";
 const MENSAGEM_LOGIN_ERRO_VERIFICACAO=  "Email e/ou Senha incorretos";
-const MENSAGEM_LOGIN_PADRAO =           "Insira suas Credenciais de Administrador";
+const MENSAGEM_LOGIN_PADRAO =           "Insira suas Credenciais";
 const MENSAGEM_LOGIN_VERIFICANDO =      "Verificando...";
 const MENSAGEM_LOGIN_SUCESSO =          "Entrando...";
 const FA_INFORMACAO =                   "<i class='fas fa-info-circle fa-lg'></i>&nbsp";
@@ -17,6 +17,10 @@ const FA_CARREGANDO =                   "<i class='fas fa-circle-notch fa-spin'>
 Funções JS e Jquery
 -----------------------------------------
 */
+$(document).ready(function(){
+    $(".help-block").html(FA_INFORMACAO + MENSAGEM_LOGIN_PADRAO);
+});
+
 function loginHelperErrors(caso){
 	if(caso == 0){
 		$(".has-error").removeClass("has-error");
@@ -85,6 +89,7 @@ $(function (){
             data: $(this).serialize(),
 
             beforeSend: function(){
+                $("#botaoLoginGoogle").prop('disabled', true);
                 $("#loginForm").attr('disabled', true);
                 clearErrors();
                 $(".login-helper").children().html(loadingImg(MENSAGEM_LOGIN_VERIFICANDO));
@@ -96,6 +101,7 @@ $(function (){
                     window.location = BASE_URL + "user/profile";
                 }else{
                     showErrors(json["error_list"]);
+                    $("#botaoLoginGoogle").prop('disabled', false);
                     $("#loginForm").attr('disabled', false);
                 }
             },

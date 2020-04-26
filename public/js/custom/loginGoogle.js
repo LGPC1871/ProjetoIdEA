@@ -18,7 +18,7 @@ function sendUserTokenToBackend(userData){
             window.location = BASE_URL + "user/profile";
         },
         error: function(){
-            console.log('erro...')
+            $("#botaoLogin").prop('disabled', false);
         }
     })
 }

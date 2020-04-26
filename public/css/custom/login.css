@@ -17,6 +17,9 @@ main{
 form > div > h2{
     vertical-align: middle;
 }
+form > div > h6{
+    font-weight: 600;
+}
 
 form > .form-group > label{
     font-weight: bolder;
@@ -24,6 +27,7 @@ form > .form-group > label{
 
 .g-signin2{
     width: 100%;
+    content: 'teste';
 } 
 .g-signin2 > div{
     margin: 0 auto;

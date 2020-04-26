@@ -10,12 +10,12 @@ $diretorio = base_url();
                     <div class="form-group text-center">
                         <h3>ENTRAR</h3>
                         <hr>
-                        <div class="g-signin2" data-onsuccess="onSignIn" data-longtitle="true" data-theme="dark">Google Login</div>
+                        <div class="g-signin2" data-onsuccess="onSignIn" data-longtitle="true" data-theme="dark" id="botaoLoginGoogle">Google Login</div>
                     </div>
                     <div class="form-group text-center">
                         <h6>OU</h6>
                         <div class="login-helper no-error">
-                            <span class="help-block"><i class="fas fa-info-circle fa-lg"></i> Insira suas Credenciais</span>
+                            <span class="help-block">Insira suas Credenciais</span>
                         </div>
                     </div>
                     <div class="form-group">

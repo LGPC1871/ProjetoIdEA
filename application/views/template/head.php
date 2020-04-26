@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $diretorio = base_url();
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="utf-8" />
     <meta name="google-signin-client_id" content="482205672789-flab0s8c0o2q5844v4h1mqlgdagcmvuj.apps.googleusercontent.com" />
