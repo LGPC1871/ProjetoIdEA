@@ -1,23 +1,21 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+$diretorio = base_url();
+?>
 <main>
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-xl-5 col-lg-5 col-md-6 col-sm-8 col-10 text-center">
-                <h1>Entrar</h1>
-                <hr>
-            </div>
-        </div>
-        <div class="row justify-content-center">
             <div class="col-xl-4 col-lg-5 col-md-6 col-sm-8 col-10" id="div-form">
-                <!--Mensagem de sucesso/erro aqui?-->
                 <form action="" method="post" id="loginForm">
                     <div class="form-group text-center">
-                        <h2>Entrar</h2>
+                        <h3>ENTRAR</h3>
                         <hr>
                         <div class="g-signin2" data-onsuccess="onSignIn" data-longtitle="true" data-theme="dark">Google Login</div>
                     </div>
                     <div class="form-group text-center">
+                        <h6>OU</h6>
                         <div class="login-helper no-error">
-                            <span class="help-block"><i class="fas fa-info-circle fa-lg"></i> Insira suas Credenciais</span>
+                            <span class="help-block"><i class="fas fa-info-circle fa-lg"></i>Insira suas Credenciais</span>
                         </div>
                     </div>
                     <div class="form-group">
@@ -31,7 +29,7 @@
                     </div>
                     <div class="form-group text-center">
                         <button type="submit" class="btn btn-primary" name="loginSubmit" id="botaoLogin" value="login">Entrar</button>
-                        <small id="passwordInfo" class="form-text text-muted">Não está registrado? <a href="">clique aqui</a>.</small>
+                        <small id="passwordInfo" class="form-text text-muted">Não está registrado? <a href="<?=$diretorio?>user/register">clique aqui</a>.</small>
                     </div>
                 </form>
             </div>

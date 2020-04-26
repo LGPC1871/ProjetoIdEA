@@ -9,11 +9,21 @@ class User extends CI_Controller{
         $this->load->model('users');
         $this->load->library('form_validation');  
     }
-    
+/*
+|--------------------------------------------------------------------------
+| Debug
+|--------------------------------------------------------------------------
+| Todas as funções debug do controller
+*/
     private function echoUserData($userData){
         echo json_encode($userData);
     }
-   
+/*
+|--------------------------------------------------------------------------
+| View
+|--------------------------------------------------------------------------
+| Todas as funções do contexto view
+*/
     public function index(){
         if($this->session->userdata('loggedIn') == true){
             redirect('user/profile');
@@ -21,7 +31,20 @@ class User extends CI_Controller{
             redirect('user/login');
         }
     }
-
+    public function profile(){
+        if($this->session->userdata('loggedIn') == true){
+            $this->template->show('profile.php');
+        }else{
+            redirect('user/index');
+        }
+    }
+    public function register(){
+        if($this->session->userdata('loggedIn') == true){
+            redirect('user/index');
+        }else{
+            $this->template->show('register.php');
+        }
+    }
     public function login(){
         $content = array(
             "styles" => array('login.css'),
@@ -30,15 +53,12 @@ class User extends CI_Controller{
         );
         $this->template->show('login.php', $content);
     }
-
-    public function profile(){
-        if($this->session->userdata('loggedIn') == true){
-            $this->template->show('profile.php');
-        }else{
-            redirect('user/index');
-        }
-    }
-
+/*
+|--------------------------------------------------------------------------
+| Login
+|--------------------------------------------------------------------------
+| Todas as funções login
+*/
     public function loginAjax(){
         if (!$this->input->is_ajax_request()) {
 			exit("Nenhum acesso de script direto permitido!");
@@ -92,7 +112,20 @@ class User extends CI_Controller{
         }
         echo json_encode($json);
     }
+    public function userLogout(){
+        $this->session->set_userdata('loggedIn', false);
+        $this->session->unset_userdata('userData');
 
+        $this->session->sess_destroy();
+
+        redirect('user');
+    }
+/*
+|--------------------------------------------------------------------------
+| Login Google
+|--------------------------------------------------------------------------
+| Todas as funções login google
+*/
     public function googleAjaxLogin(){
         if (!$this->input->is_ajax_request()) {
 			exit("Nenhum acesso de script direto permitido!");
@@ -167,13 +200,11 @@ class User extends CI_Controller{
         }
         return $erros;
     }
+/* 
+|--------------------------------------------------------------------------
+| Register
+|--------------------------------------------------------------------------
+| Todas as funções de registro
+*/
 
-    public function userLogout(){
-        $this->session->set_userdata('loggedIn', false);
-        $this->session->unset_userdata('userData');
-
-        $this->session->sess_destroy();
-
-        redirect('user');
-    }
 }

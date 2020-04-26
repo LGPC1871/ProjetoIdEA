@@ -85,6 +85,7 @@ $(function (){
             data: $(this).serialize(),
 
             beforeSend: function(){
+                $("#loginForm").attr('disabled', true);
                 clearErrors();
                 $(".login-helper").children().html(loadingImg(MENSAGEM_LOGIN_VERIFICANDO));
             },
@@ -95,6 +96,7 @@ $(function (){
                     window.location = BASE_URL + "user/profile";
                 }else{
                     showErrors(json["error_list"]);
+                    $("#loginForm").attr('disabled', false);
                 }
             },
 
