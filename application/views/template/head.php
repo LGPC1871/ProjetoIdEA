@@ -16,10 +16,10 @@ $diretorio = base_url();
     <?php endif ?>
     <base href="<?=$diretorio?>/" />
     <!--JQuery-->
-    <script type="text/javascript" src="public/js/jquery.js"></script>
+    <script type="text/javascript" src="vendor/components/jquery/jquery.js"></script>
     <!--Bootstrap-->
-    <script type="text/javascript" src="public/js/bootstrap.js"></script>
-    <link rel="stylesheet" href="public/css/bootstrap/bootstrap.css" />
+    <script type="text/javascript" src="vendor/twbs/bootstrap/dist/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="vendor/twbs/bootstrap/dist/css/bootstrap.css" />
     <!--Font Awesome-->
     <link rel="stylesheet" href="vendor/fortawesome/font-awesome/css/all.css" />
     <!--Head CSS-->
