@@ -1,24 +1,12 @@
 {
-	"description": "Projeto IdEA",
-	"name": "codeigniter/framework",
+	"description": "Repositório do projeto IdEA",
+	"name": "IdEA",
 	"type": "project",
-	"homepage": "https://codeigniter.com",
-	"license": "MIT",
-	"support": {
-		"forum": "http://forum.codeigniter.com/",
-		"wiki": "https://github.com/bcit-ci/CodeIgniter/wiki",
-		"slack": "https://codeigniterchat.slack.com",
-		"source": "https://github.com/bcit-ci/CodeIgniter"
-	},
 	"require": {
 		"php": ">=5.3.7",
-		"google/apiclient": "^2.0"
-	},
-	"suggest": {
-		"paragonie/random_compat": "Provides better randomness in PHP 5.x"
-	},
-	"require-dev": {
-		"mikey179/vfsStream": "1.1.*",
-		"phpunit/phpunit": "4.* || 5.*"
+		"google/apiclient": "^2.0",
+		"components/jquery": "^3.4",
+		"twbs/bootstrap": "^4.4",
+		"fortawesome/font-awesome": "^5.13"
 	}
 }
