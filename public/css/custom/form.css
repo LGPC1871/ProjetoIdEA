@@ -1,0 +1,19 @@
+#div-form{
+    padding: 20px;
+    padding-left: 30px;
+    padding-right: 30px;
+
+    border-style: solid;
+    border-radius: 10px;
+    border-width: 1px;
+    border-color: grey;
+}
+form label{
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: small;
+}
+form button{
+    text-transform: uppercase;
+    font-weight: bold !important;
+}

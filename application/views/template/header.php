@@ -18,10 +18,13 @@ $diretorio = base_url();
                 </button>
 
                 <div class="collapse navbar-collapse bg-dark ml-auto" id="menu">
-                    <hr>
+                    <hr />
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
                             <a class="nav-link" href="<?=$diretorio?>user">Conta</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?=$diretorio?>user/register">Cadastrar</a>
                         </li>
                     </ul>
                 </div>

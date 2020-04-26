@@ -9,7 +9,7 @@ $diretorio = base_url();
                 <form action="" method="post" id="loginForm">
                     <div class="form-group text-center">
                         <h3>ENTRAR</h3>
-                        <hr>
+                        <hr />
                         <div class="g-signin2" data-onsuccess="onSignIn" data-longtitle="true" data-theme="dark" id="botaoLoginGoogle">Google Login</div>
                     </div>
                     <div class="form-group text-center">

@@ -42,12 +42,16 @@ class User extends CI_Controller{
         if($this->session->userdata('loggedIn') == true){
             redirect('user/index');
         }else{
-            $this->template->show('register.php');
+            $content = array(
+                "styles" => array('form.css', 'register.css'),
+                "scripts" => array(),
+            );
+            $this->template->show('register.php', $content);
         }
     }
     public function login(){
         $content = array(
-            "styles" => array('login.css'),
+            "styles" => array('login.css', 'form.css'),
             "headScripts" => array("https://apis.google.com/js/platform.js", "https://apis.google.com/js/platform.js?onload=renderButton"),
             "scripts" => array("loginGoogle.js", "loginPadrao.js", "util.js"),
         );
