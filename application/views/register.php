@@ -12,7 +12,7 @@
                 <div class="form-group text-center">
                     <h2>FORMULÁRIO DE CADASTRO</h2>
                     <hr />
-                    <div class="register-helper no-error">
+                    <div class="helper no-error">
                         <span class="help-block">Preencha todos os campos</span>
                     </div>
                 </div>

@@ -9,6 +9,13 @@ class User extends CI_Controller{
         $this->load->model('users');
         $this->load->library('form_validation');  
     }
+    public function index(){
+        if($this->session->userdata('loggedIn') == true){
+            redirect('user/profile');
+        }else{
+            redirect('user/login');
+        }
+    }
 /*
 |--------------------------------------------------------------------------
 | Debug
@@ -24,13 +31,6 @@ class User extends CI_Controller{
 |--------------------------------------------------------------------------
 | Todas as funções do contexto view
 */
-    public function index(){
-        if($this->session->userdata('loggedIn') == true){
-            redirect('user/profile');
-        }else{
-            redirect('user/login');
-        }
-    }
     public function profile(){
         if($this->session->userdata('loggedIn') == true){
             $this->template->show('profile.php');
@@ -44,18 +44,22 @@ class User extends CI_Controller{
         }else{
             $content = array(
                 "styles" => array('form.css', 'register.css'),
-                "scripts" => array(),
+                "scripts" => array("util.js", "form.js", "register.js"),
             );
             $this->template->show('register.php', $content);
         }
     }
     public function login(){
-        $content = array(
-            "styles" => array('login.css', 'form.css'),
-            "headScripts" => array("https://apis.google.com/js/platform.js", "https://apis.google.com/js/platform.js?onload=renderButton"),
-            "scripts" => array("loginGoogle.js", "loginPadrao.js", "util.js"),
-        );
-        $this->template->show('login.php', $content);
+        if($this->session->userdata('loggedIn') == true){
+            redirect('user/index');
+        }else{
+            $content = array(
+                "styles" => array('login.css', 'form.css'),
+                "headScripts" => array('https://apis.google.com/js/platform.js', 'https://apis.google.com/js/platform.js?onload=renderButton'),
+                "scripts" => array('loginGoogle.js', 'loginPadrao.js', 'util.js', 'form.js'),
+            );
+            $this->template->show('login.php', $content);
+        }
     }
 /*
 |--------------------------------------------------------------------------

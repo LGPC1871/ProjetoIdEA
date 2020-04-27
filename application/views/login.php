@@ -14,7 +14,7 @@ $diretorio = base_url();
                     </div>
                     <div class="form-group text-center">
                         <h6>OU</h6>
-                        <div class="login-helper no-error">
+                        <div class="helper no-error">
                             <span class="help-block">Insira suas Credenciais</span>
                         </div>
                     </div>
