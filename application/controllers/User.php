@@ -74,24 +74,26 @@ class User extends CI_Controller{
         //Adicionando variavel json para usar no ajax
         $json = array();
         $json["status"] = 0; //sinaliza se há erros (0-nao 1-sim)
+        $json["empty"] = 0;
         $json["error_list"] = array();
 
         //Recolhe informacoes do formulario;
-        $email = $this->input->post("email");
-        $password = $this->input->post("password");
+        $email = $this->input->post("Email");
+        $password = $this->input->post("Senha");
         
         //Se o botao login for acionado
         
         if(empty($email) || empty($password)){
             $json["status"] = 1;
+            $json["empty"] = 1;
             if(empty($password))
-                $json["error_list"]["#senha"] = "";
+                array_push($json["error_list"], "#password");
             if(empty($email))
-                $json["error_list"]["#email"] = "";
+                array_push($json["error_list"], "#email");
         }else{
             
-            $this->form_validation->set_rules('email', 'Email', 'required');
-            $this->form_validation->set_rules('password', 'Senha', 'required');
+            $this->form_validation->set_rules('Email', 'Email', 'required');
+            $this->form_validation->set_rules('Senha', 'Senha', 'required');
 
             if($this->form_validation->run() == true){
 
@@ -115,7 +117,7 @@ class User extends CI_Controller{
                 $json["status"] = 1;
                 }
             if($json["status"] == 1){
-                $json["error_list"]["#botaoLogin"] = "";
+                array_push($json["error_list"], "#email", "#password");
             }
         }
         echo json_encode($json);

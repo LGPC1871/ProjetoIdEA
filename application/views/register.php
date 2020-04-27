@@ -19,31 +19,31 @@
                 <div class="row justify-content-center">
                     <div class="form-group col-6">
                         <label for="nome">Nome</label>
-                        <input type="text" class="form-control" name="nome" id="nome" placeholder="Digite seu nome">
+                        <input type="text" class="form-control" name="Nome" id="firstName" placeholder="Digite seu nome">
                     </div>
                     <div class="form-group col-6">
                         <label for="sobrenome">Sobrenome</label>
-                        <input type="text" class="form-control" name="sobrenome" id="sobrenome" placeholder="Digite seu sobrenome">
+                        <input type="text" class="form-control" name="Sobrenome" id="lastName" placeholder="Digite seu sobrenome">
                     </div>
                 </div>
                 <div class="row justify-content-center">
                     <div class="form-group col-12">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" name="email" id="email" placeholder="Digite seu email">
+                        <input type="email" class="form-control" name="Email" id="email" placeholder="Digite seu email">
                     </div>
                 </div>
                 <div class="row justify-content-center">
                     <div class="form-group col-6">
                         <label for="password">Senha</label>
-                        <input type="password" class="form-control" name="password" id="password" placeholder="Digite uma senha">
+                        <input type="password" class="form-control" name="Senha" id="password" placeholder="Digite uma senha">
                     </div>
                     <div class="form-group col-6">
                         <label for="passwordConfirm">Confirmar Senha</label>
-                        <input type="password" class="form-control" name="passwordConfirm" id="passwordConfirm" placeholder="Confirme sua senha">
+                        <input type="password" class="form-control" name="Senha2" id="passwordConfirm" placeholder="Confirme sua senha">
                     </div>
                 </div>
                 <div class="form-group text-center">
-                    <button type="submit" class="btn btn-primary" name="loginSubmit" id="botaoLogin" value="login">Cadastrar</button>
+                    <button type="submit" class="btn btn-primary" name="submit" id="btnSubmit">Cadastrar</button>
                 </div>
             </form>
             </div>

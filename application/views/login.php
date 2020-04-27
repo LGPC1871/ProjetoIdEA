@@ -6,11 +6,11 @@ $diretorio = base_url();
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-xl-4 col-lg-5 col-md-6 col-sm-8 col-10" id="div-form">
-                <form action="" method="post" id="loginForm">
+                <form action="" method="post" id="form">
                     <div class="form-group text-center">
                         <h3>ENTRAR</h3>
                         <hr />
-                        <div class="g-signin2" data-onsuccess="onSignIn" data-longtitle="true" data-theme="dark" id="botaoLoginGoogle">Google Login</div>
+                        <div class="g-signin2" data-onsuccess="onSignIn" data-longtitle="true" data-theme="dark" id="botaoLoginGoogle" ></div>
                     </div>
                     <div class="form-group text-center">
                         <h6>OU</h6>
@@ -20,15 +20,15 @@ $diretorio = base_url();
                     </div>
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" name="email" id="email" placeholder="Digite seu email">
+                        <input type="email" class="form-control" name="Email" id="email" placeholder="Digite seu email">
                     </div>
                     <div class="form-group">
                         <label for="password">Senha</label>
-                        <input type="password" class="form-control" name="password" id="senha" aria-describedby="passwordInfo" placeholder="Digite sua senha">
+                        <input type="password" class="form-control" name="Senha" id="password" aria-describedby="passwordInfo" placeholder="Digite sua senha">
                         <small id="passwordInfo" class="form-text text-muted">Não compartilhe sua senha com ninguém</small>
                     </div>
                     <div class="form-group text-center">
-                        <button type="submit" class="btn btn-primary" name="loginSubmit" id="botaoLogin" value="login">Entrar</button>
+                        <button type="submit" class="btn btn-primary" name="submit" id="btnSubmit">Entrar</button>
                         <small id="passwordInfo" class="form-text text-muted">Não está registrado? <a href="<?=$diretorio?>user/register">clique aqui</a>.</small>
                     </div>
                 </form>

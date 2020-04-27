@@ -1,27 +1,11 @@
 /*
------------------------------------------
-Declaração de Constantes
------------------------------------------
-*/
-const MENSAGEM_LOGIN_ERRO_USER =        "Email Inválido";
-const MENSAGEM_LOGIN_ERRO_PASSWORD =    "Senha Inválida";
-const MENSAGEM_LOGIN_ERRO_VERIFICACAO=  "Email e/ou Senha incorretos";
-/*
------------------------------------------
-Funções JS e Jquery
------------------------------------------
-*/
-$(document).ready(function(){
-    $(".help-block").html(FA_INFORMACAO + MENSAGEM_PADRAO);
-});
-
-/*
------------------------------------------
-Requisição Ajax
------------------------------------------
+|--------------------------------------------------------------------------
+| Requisição Ajax
+|--------------------------------------------------------------------------
+|
 */
 $(function (){
-    $("#loginForm").submit(function(){
+    $("#form").submit(function(){
         $.ajax({
             type: "post",
             url: BASE_URL + "user/loginAjax",
@@ -29,29 +13,38 @@ $(function (){
             data: $(this).serialize(),
 
             beforeSend: function(){
-                $("#botaoLoginGoogle").prop('disabled', true);
-                $("#loginForm").attr('disabled', true);
-                clearErrors(MENSAGEM_PADRAO);
-                $(".helper").children().html(loadingImg(MENSAGEM_VERIFICANDO));
+                formStatus(0);
+                showHelperErrors(false);
+                loadingRequest(0);
+                $("#botaoLoginGoogle").attr("style", "pointer-events:none");
             },
-
             success: function(json){
                 if(json["status"] == 0){
-                    $(".helper").children().html(loadingImg(MENSAGEM_SUCESSO));
-                    window.location = BASE_URL + "user/profile";
+                    console.log("foi");
+                    loadingRequest(1);
+                    window.location = BASE_URL + "user/profile"
                 }else{
-                    showErrors(json["error_list"]);
-                    $("#senha").val('').blur();
-                    $("#botaoLoginGoogle").prop('disabled', false);
-                    $("#loginForm").attr('disabled', false);
+                    formStatus(1);
+                    comboErrorLogin(json);
+                    $("#botaoLoginGoogle").removeAttr("style", "pointer-events:none");
                 }
             },
-
             error: function(response){
+                showHelperErrors(false);
+                formStatus(1);
                 console.log(response);
-            }
-            
+            } 
         })
         return false;
     })
 })
+
+function comboErrorLogin(json){
+    if(json["empty"] == 0){
+        invalidInfo(["Email", "Senha"]);
+    }else{
+        verifyFormInputs(json["error_list"]);
+    }
+    showHelperErrors(true);
+    formAddErrors(json["error_list"]);
+}
