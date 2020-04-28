@@ -72,10 +72,11 @@ class User extends CI_Controller{
 			exit("Nenhum acesso de script direto permitido!");
 		}
         //Adicionando variavel json para usar no ajax
-        $json = array();
-        $json["status"] = 0; //sinaliza se há erros (0-nao 1-sim)
-        $json["empty"] = 0;
-        $json["error_list"] = array();
+        $response = array(
+            "status" => 0,
+            "empty" => 0,
+            "error_list" => array()
+        );
 
         //Recolhe informacoes do formulario;
         $email = $this->input->post("Email");
@@ -84,12 +85,12 @@ class User extends CI_Controller{
         //Se o botao login for acionado
         
         if(empty($email) || empty($password)){
-            $json["status"] = 1;
-            $json["empty"] = 1;
+            $response["status"] = 1;
+            $response["empty"] = 1;
             if(empty($password))
-                array_push($json["error_list"], "#password");
+                array_push($response["error_list"], "#password");
             if(empty($email))
-                array_push($json["error_list"], "#email");
+                array_push($response["error_list"], "#email");
         }else{
             
             $this->form_validation->set_rules('Email', 'Email', 'required');
@@ -108,19 +109,19 @@ class User extends CI_Controller{
                         $this->session->set_userdata('loggedIn', true);
                         $this->session->set_userdata('userData', $result);
                     }else{
-                        $json["status"] = 1;
+                        $response["status"] = 1;
                     }
                 }else{
-                    $json["status"] = 1;
+                    $response["status"] = 1;
                 }
             }else{
-                $json["status"] = 1;
+                $response["status"] = 1;
                 }
-            if($json["status"] == 1){
-                array_push($json["error_list"], "#email", "#password");
+            if($response["status"] == 1){
+                array_push($response["error_list"], "#email", "#password");
             }
         }
-        echo json_encode($json);
+        echo json_encode($response);
     }
     public function userLogout(){
         $this->session->set_userdata('loggedIn', false);
@@ -214,7 +215,71 @@ class User extends CI_Controller{
 |--------------------------------------------------------------------------
 | Register
 |--------------------------------------------------------------------------
-| Todas as funções de registro
+| Todas as funções da funcionalidade de cadastro
 */
+    public function registerAjax(){
+        if (!$this->input->is_ajax_request()) {
+			exit("Nenhum acesso de script direto permitido!");
+        }
 
+        $response = array(
+            "status" => 0,
+            "empty" => 0,
+            "error_list" => array()
+        );
+        
+        $firstName = $this->input->post("Nome");
+        $lastName = $this->input->post("Sobrenome");
+        $email = $this->input->post("Email");
+        $senha = $this->input->post("Senha");
+        $senhaConfirma = $this->input->post("Senha2");
+
+        $inputJson = array(
+            "#firstName" => $firstName,
+            "#lastName" => $lastName,
+            "#email" => $email,
+            "#password" => $senha,
+            "#passwordConfirm" => $senhaConfirma
+        );
+
+        foreach($inputJson as $key => $value){
+            if(empty($value) || $value == " "){
+                $response['empty'] = 1;
+                $response['status'] = 1;
+                array_push($response["error_list"], $key);
+            }
+        }
+        if($response['status'] == 0){
+            //verificar nomes
+            if(preg_match('/[^a-zA-Z]/', $firstName)){
+                $response['status'] = 1;
+                array_push($response["error_list"], "#firstName");
+            }
+            if(preg_match('/[^a-zA-Z]/', $lastName)){
+                $response['status'] = 1;
+                array_push($response["error_list"], "#lastName");
+            }
+        }
+
+        if($response['status'] == 0){
+            //verificar Email
+            $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+
+            if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+                $response['status'] = 1;
+                array_push($response["error_list"], "#email");
+            }
+        }
+
+        if($response['status'] == 0){
+            //verificar senhas
+            if($senha != $senhaConfirma){
+                $response['status'] = 1;
+                array_push($response["error_list"], "#password");
+                array_push($response["error_list"], "#passwordConfirm");
+            }
+        }
+
+        echo json_encode($response);
+    }
 }

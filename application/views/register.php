@@ -1,3 +1,7 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+$diretorio = base_url();
+?>
 <main>
     <div class="container">
         <div class="row justify-content-center text-center">
@@ -8,7 +12,7 @@
         </div>
         <div class="row justify-content-center">
             <div class="col-xl-6 col-lg-7 col-md-11 col-sm-12 col-11" id="div-form">
-            <form action="" method="post">
+            <form action="" method="post" id="form">
                 <div class="form-group text-center">
                     <h2>FORMULÁRIO DE CADASTRO</h2>
                     <hr />
@@ -44,6 +48,7 @@
                 </div>
                 <div class="form-group text-center">
                     <button type="submit" class="btn btn-primary" name="submit" id="btnSubmit">Cadastrar</button>
+                    <small id="passwordInfo" class="form-text text-muted">Já está registrado? <a href="<?=$diretorio?>user/login">clique aqui</a>.</small>
                 </div>
             </form>
             </div>
