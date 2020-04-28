@@ -29,10 +29,10 @@ $diretorio = base_url();
             <link href="<?=$href?>" rel="stylesheet" />
         <?php endforeach ?>
     <?php endif ?>
-    <link rel="stylesheet" href="public/css/custom/style.css" />
-    <link rel="stylesheet" href="public/css/custom/header.css" />
-    <link rel="stylesheet" href="public/css/custom/main.css" />
-    <link rel="stylesheet" href="public/css/custom/footer.css" />
+    <link rel="stylesheet" href="public/css/template/style.css" />
+    <link rel="stylesheet" href="public/css/template/header.css" />
+    <link rel="stylesheet" href="public/css/template/main.css" />
+    <link rel="stylesheet" href="public/css/template/footer.css" />
     
     <link rel="shortcut icon" href="public/images/favicon.ico" />
     <title>IdEA</title>

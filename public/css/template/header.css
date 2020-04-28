@@ -1,16 +1,26 @@
 /*Header*/
-.navbar{
-    padding: 0;
+header{
+    position: relative;
+    height: 10vh;
+    max-height: 10vh;
+    min-height: 60px;
+    min-width: 100%;
+
+    background-color: black;
 }
-.navbar-toggler{
-    margin-right: 30px;
+nav{
+    padding: 0!important;
+    height: 100%;
+    min-height: 100%;
+    width: 100%;
 }
 #navbar-div{
     height: 100%;
+    min-width: 100%;
 }
-    /*Logo*/
+/*Logo*/
     #logo{
-        margin-left: 10px;
+        margin-left: 6vw;
         height: 100%;
     }
     #logo-div{
@@ -19,15 +29,15 @@
     #logo-div > img{
         height: 100%;
     }
-    /*Menu*/
+/*Menu*/
     #menu{
         z-index: 1;
+        margin-right: 5vw;
     }
-
     #menu > ul> li{
         text-transform: uppercase;
         color: white!important;
-        margin-left: 10px;
+        margin-left: 1vw;
         font-size: 1rem;
     }
     #menu > hr{
@@ -40,7 +50,8 @@
     .navbar-light .navbar-nav .nav-link:hover{
         color:orangered;
     }
-    /*Colapsar*/
+/*Colapsar*/
     #botao-navbar{
         border-color: white;
+        margin-right: 4vw;
     }
