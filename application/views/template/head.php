@@ -5,7 +5,7 @@ $diretorio = base_url();
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <meta name="google-signin-client_id" content="482205672789-flab0s8c0o2q5844v4h1mqlgdagcmvuj.apps.googleusercontent.com" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--Head Scripts-->

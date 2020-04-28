@@ -4,6 +4,7 @@
 |--------------------------------------------------------------------------
 | Todas as constantes de cadastro
 */
+const TEXTO_BOTAO_GOOGLE =              "Entrar com Google";
 const MENSAGEM_ERRO =                   "inválido";
 const MENSAGEM_PADRAO =                 "Preencha os campos";
 const MENSAGEM_VERIFICANDO =            "Verificando...";
@@ -21,7 +22,6 @@ const FA_CARREGANDO =                   "<i class='fas fa-circle-notch fa-spin'>
 $(document).ready(function(){
     $(".help-block").html(FA_INFORMACAO + MENSAGEM_PADRAO);
 });
-
 /*
 |--------------------------------------------------------------------------
 | Funções
@@ -88,8 +88,10 @@ function invalidInfo(arrayCampos){
 function formStatus(caso){
     if(caso == 0){
         $("#form :input").prop("disabled", true);
+        $("#botaoLoginGoogle").attr("style", "pointer-events:none");
     }else if(caso == 1){
         $("#form :input").prop("disabled", false);
+        $("#botaoLoginGoogle").removeAttr("style", "pointer-events:none");
     }
     else{
         console.log('invalid param for formStatus');

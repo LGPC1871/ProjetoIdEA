@@ -28,7 +28,6 @@ $diretorio = base_url();
                         </li>
                     </ul>
                 </div>
-
             </div>
         </nav>
     </header>

@@ -16,7 +16,6 @@ $(function (){
                 formStatus(0);
                 showHelperErrors(false);
                 loadingRequest(0);
-                $("#botaoLoginGoogle").attr("style", "pointer-events:none");
             },
             success: function(json){
                 if(json["status"] == 0){
@@ -26,7 +25,6 @@ $(function (){
                 }else{
                     formStatus(1);
                     comboErrorLogin(json);
-                    $("#botaoLoginGoogle").removeAttr("style", "pointer-events:none");
                 }
             },
             error: function(response){
