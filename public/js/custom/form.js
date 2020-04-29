@@ -28,6 +28,16 @@ $(document).ready(function(){
 |--------------------------------------------------------------------------
 | Todas as demais funções
 */
+function verifyFormInputs(response){
+    showHelperErrors(true);
+    formAddErrors(response["error_list"]);
+    
+    if(response["empty"] != 0){
+        emptyFormInputs();
+    }else{
+        invalidInfo(response["error_list"]);
+    }
+}
 
 function showHelperErrors(caso){
     //show errors
@@ -62,26 +72,25 @@ function formAddErrors(error_list){
     })
 }
 
-function verifyFormInputs(error_list){
-    var message = "";
-    if(error_list.length > 0){
-        message = "preencha todos os campos"
-        $(".help-block").html(FA_EXCLAMACAO + message);
-    }else{
-        console.log("nenhum erro!");
-    }
-    message = "";
+function emptyFormInputs(){
+    message = "preencha todos os campos"
+    $(".help-block").html(FA_EXCLAMACAO + message);
 }
 
-function invalidInfo(arrayCampos){
+function invalidInfo(error_list){
     var message = "";
-    $.each(arrayCampos, function(indice, nome){
-        if(indice < arrayCampos.length - 1){
-            message += nome + "/";
-        }else{
-            message += nome + " ";
+
+    $.each(error_list, function(indice, nome){
+        var text = $(nome).prev().text();
+        if(error_list.length == 1){
+            message += text + " ";
+        }else if (indice == 0){
+            message += text + "/";
+        }else if (indice == 1){
+            message += text + " ";
         }
-    })
+    });
+
     $(".help-block").html(FA_EXCLAMACAO + message + MENSAGEM_ERRO);
 }
 
@@ -97,3 +106,4 @@ function formStatus(caso){
         console.log('invalid param for formStatus');
     }
 }
+

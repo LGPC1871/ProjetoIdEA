@@ -13,11 +13,18 @@ $(function (){
             data: $(this).serialize(),
 
             beforeSend: function (){
-                console.log("teste");
+                formStatus(0);
+                showHelperErrors(false);
+                loadingRequest(0);
             },
             success: function (response){
-                console.log("foi");
-                console.log(response);
+                if(response["status"] == 0){
+                    loadingRequest(1);
+                    window.location = BASE_URL + "user/login"
+                }else{
+                    formStatus(1);
+                    verifyFormInputs(response);
+                }
             },
             error: function(response){
                 showHelperErrors(false);

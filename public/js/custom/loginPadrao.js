@@ -17,14 +17,13 @@ $(function (){
                 showHelperErrors(false);
                 loadingRequest(0);
             },
-            success: function(json){
-                if(json["status"] == 0){
-                    console.log("foi");
+            success: function(response){
+                if(response["status"] == 0){
                     loadingRequest(1);
                     window.location = BASE_URL + "user/profile"
                 }else{
                     formStatus(1);
-                    comboErrorLogin(json);
+                    verifyFormInputs(response);
                 }
             },
             error: function(response){
@@ -36,13 +35,3 @@ $(function (){
         return false;
     })
 })
-
-function comboErrorLogin(json){
-    if(json["empty"] == 0){
-        invalidInfo(["Email", "Senha"]);
-    }else{
-        verifyFormInputs(json["error_list"]);
-    }
-    showHelperErrors(true);
-    formAddErrors(json["error_list"]);
-}

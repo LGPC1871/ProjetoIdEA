@@ -7,10 +7,10 @@ class Users extends CI_Model{
         $this->pessoa = 'AA_pessoa';
     }
 
-    public function userExists($userId){
-        $this->db->select('AA_googleId')
+    public function userExists($userEmail){
+        $this->db->select('AA_userId')
                  ->from($this->pessoa)
-                 ->where('AA_googleId', $userId);
+                 ->where('AA_email', $userEmail);
         $result = $this->db->get();
 
         if($result->num_rows() > 0)
@@ -20,8 +20,13 @@ class Users extends CI_Model{
     }
 
     function updateUserData($userData){
-        $this->db->where('AA_googleId', $userData['AA_googleId']);
-        $this->db->update($this->pessoa, $userData);
+        foreach($userData as $column=>$value){
+            $data = array(
+                $column => $value
+            );
+            $this->db->where($column, null);
+            $this->db->update($this->pessoa, $data);
+        }
     }
 
     function insertUserData($userData){
@@ -39,4 +44,13 @@ class Users extends CI_Model{
         else
             return null;
     }
+
+   /* function teste($userData){
+        foreach($userData as $column=>$value){
+            $this->db->where($column, null);
+            $this->db->update($this->pessoa, $value);
+        }
+        $this->db->where('AA_email', $userData['AA_email']);
+        $this->db->update($this->pessoa, $userData);
+    }*/
 }

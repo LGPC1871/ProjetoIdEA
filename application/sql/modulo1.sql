@@ -8,25 +8,26 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema mydb
+-- Schema cl16293
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema mydb
+-- Schema cl16293
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
-USE `mydb` ;
+CREATE SCHEMA IF NOT EXISTS `cl16293` DEFAULT CHARACTER SET utf8 ;
+USE `cl16293` ;
 
 -- -----------------------------------------------------
--- Table `mydb`.`AA_pessoa`
+-- Table `cl16293`.`AA_pessoa`
 -- -----------------------------------------------------
 CREATE TABLE `AA_pessoa` (
   `AA_userId` int(11) NOT NULL AUTO_INCREMENT,
-  `AA_googleId` varchar(50) NOT NULL,
+  `AA_googleId` varchar(50) DEFAULT NULL,
   `AA_email` varchar(255) NOT NULL,
   `AA_fullName` varchar(255) NOT NULL,
   `AA_firstName` varchar(100) DEFAULT NULL,
   `AA_lastName` varchar(155) DEFAULT NULL,
+  `AA_password` varchar(255) DEFAULT NULL,
   `AA_picture` varchar(255) DEFAULT NULL,
   `AA_created` datetime NOT NULL,
   `AA_updated` datetime NOT NULL,
@@ -37,48 +38,48 @@ CREATE TABLE `AA_pessoa` (
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`AB_admin`
+-- Table `cl16293`.`AB_admin`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`AB_admin` (
+CREATE TABLE IF NOT EXISTS `cl16293`.`AB_admin` (
   `AB_id` INT NOT NULL AUTO_INCREMENT,
   `AA_id` INT NOT NULL,
   PRIMARY KEY (`AB_id`, `AA_id`),
   INDEX `fk_AB_admin_AA_pessoa_idx` (`AA_id` ASC),
   CONSTRAINT `fk_AB_admin_AA_pessoa`
     FOREIGN KEY (`AA_id`)
-    REFERENCES `mydb`.`AA_pessoa` (`AA_userId`)
+    REFERENCES `cl16293`.`AA_pessoa` (`AA_userId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`AC_palestrante`
+-- Table `cl16293`.`AC_palestrante`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`AC_palestrante` (
+CREATE TABLE IF NOT EXISTS `cl16293`.`AC_palestrante` (
   `AC_id` INT NOT NULL AUTO_INCREMENT,
   `AA_id` INT NOT NULL,
   PRIMARY KEY (`AC_id`, `AA_id`),
   INDEX `fk_AC_palestrante_AA_pessoa1_idx` (`AA_id` ASC),
   CONSTRAINT `fk_AC_palestrante_AA_pessoa1`
     FOREIGN KEY (`AA_id`)
-    REFERENCES `mydb`.`AA_pessoa` (`AA_userId`)
+    REFERENCES `cl16293`.`AA_pessoa` (`AA_userId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`AD_participante`
+-- Table `cl16293`.`AD_participante`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`AD_participante` (
+CREATE TABLE IF NOT EXISTS `cl16293`.`AD_participante` (
   `AD_id` INT NOT NULL AUTO_INCREMENT,
   `AA_id` INT NOT NULL,
   PRIMARY KEY (`AD_id`, `AA_id`),
   INDEX `fk_AD_participante_AA_pessoa1_idx` (`AA_id` ASC),
   CONSTRAINT `fk_AD_participante_AA_pessoa1`
     FOREIGN KEY (`AA_id`)
-    REFERENCES `mydb`.`AA_pessoa` (`AA_userId`)
+    REFERENCES `cl16293`.`AA_pessoa` (`AA_userId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

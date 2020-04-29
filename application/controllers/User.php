@@ -164,7 +164,7 @@ class User extends CI_Controller{
         $data = $this->verifyGoogleUserData($client, $userToken);
         
         if(!isset($data['Erro'])){
-            $userExist = $this->users->userExists($data['AA_googleId']);
+            $userExist = $this->users->userExists($data['AA_email']);
 
             if($userExist){
                 $data['AA_updated'] = date("Y-m-d H:i:s");
@@ -218,7 +218,7 @@ class User extends CI_Controller{
 | Todas as funções da funcionalidade de cadastro
 */
     public function registerAjax(){
-        if (!$this->input->is_ajax_request()) {
+       if (!$this->input->is_ajax_request()) {
 			exit("Nenhum acesso de script direto permitido!");
         }
 
@@ -243,7 +243,7 @@ class User extends CI_Controller{
         );
 
         foreach($inputJson as $key => $value){
-            if(empty($value) || $value == " "){
+            if(empty($value) || $value == " " || ctype_space($value)){
                 $response['empty'] = 1;
                 $response['status'] = 1;
                 array_push($response["error_list"], $key);
@@ -251,21 +251,23 @@ class User extends CI_Controller{
         }
         if($response['status'] == 0){
             //verificar nomes
-            if(preg_match('/[^a-zA-Z]/', $firstName)){
+            $pattern = '/[^a-zA-Z ]/';
+            if(preg_match($pattern, $firstName)){
                 $response['status'] = 1;
                 array_push($response["error_list"], "#firstName");
             }
-            if(preg_match('/[^a-zA-Z]/', $lastName)){
+            if(preg_match($pattern, $lastName)){
                 $response['status'] = 1;
                 array_push($response["error_list"], "#lastName");
             }
+            $fullName = $firstName . " " . $lastName;
         }
 
         if($response['status'] == 0){
             //verificar Email
             $email = filter_var($email, FILTER_SANITIZE_EMAIL);
-
-            if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+            $result = $this->users->userExists($email);
+            if(!filter_var($email, FILTER_VALIDATE_EMAIL) || $result){
                 $response['status'] = 1;
                 array_push($response["error_list"], "#email");
             }
@@ -277,7 +279,24 @@ class User extends CI_Controller{
                 $response['status'] = 1;
                 array_push($response["error_list"], "#password");
                 array_push($response["error_list"], "#passwordConfirm");
+            }else{
+                $passwordHash = password_hash($senha, PASSWORD_DEFAULT);
             }
+        }
+
+        if($response['status'] == 0){
+            $time = date("Y-m-d H:i:s");
+            $userData = array(
+                'AA_email' => $email,
+                'AA_fullName' => $fullName,
+                'AA_firstName' => $firstName,
+                'AA_lastName' => $lastName,
+                'AA_password' => $passwordHash,
+                'AA_created' => $time,
+                'AA_updated' => $time,
+            );
+            
+            $this->users->insertUserData($userData);
         }
 
         echo json_encode($response);
