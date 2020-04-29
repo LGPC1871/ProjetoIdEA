@@ -48,7 +48,7 @@ $diretorio = base_url();
                 </div>
                 <div class="form-group text-center">
                     <button type="submit" class="btn btn-primary" name="submit" id="btnSubmit">Cadastrar</button>
-                    <small id="passwordInfo" class="form-text text-muted">Já está registrado? <a href="<?=$diretorio?>user/login">clique aqui</a>.</small>
+                    <small id="passwordInfo" class="form-text text-muted">Já está cadastrado? <a href="<?=$diretorio?>user/login">clique aqui</a>.</small>
                 </div>
             </form>
             </div>
