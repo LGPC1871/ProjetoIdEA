@@ -44,13 +44,4 @@ class Users extends CI_Model{
         else
             return null;
     }
-
-   /* function teste($userData){
-        foreach($userData as $column=>$value){
-            $this->db->where($column, null);
-            $this->db->update($this->pessoa, $value);
-        }
-        $this->db->where('AA_email', $userData['AA_email']);
-        $this->db->update($this->pessoa, $userData);
-    }*/
 }

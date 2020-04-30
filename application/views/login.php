@@ -29,7 +29,7 @@ $diretorio = base_url();
                     </div>
                     <div class="form-group text-center">
                         <button type="submit" class="btn btn-primary" name="submit" id="btnSubmit">Entrar</button>
-                        <small id="passwordInfo" class="form-text text-muted">Não está registrado? <a href="<?=$diretorio?>user/register">clique aqui</a>.</small>
+                        <small id="passwordInfo" class="form-text text-muted">Não está cadastrado? <a href="<?=$diretorio?>user/register">clique aqui</a>.</small>
                     </div>
                 </form>
             </div>

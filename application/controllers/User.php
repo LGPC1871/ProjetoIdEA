@@ -213,7 +213,7 @@ class User extends CI_Controller{
     }
 /* 
 |--------------------------------------------------------------------------
-| Register
+| Cadastro
 |--------------------------------------------------------------------------
 | Todas as funções da funcionalidade de cadastro
 */
@@ -249,6 +249,7 @@ class User extends CI_Controller{
                 array_push($response["error_list"], $key);
             }
         }
+
         if($response['status'] == 0){
             //verificar nomes
             $pattern = '/[^a-zA-Z ]/';
