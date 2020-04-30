@@ -30,6 +30,7 @@ $diretorio = base_url();
                     <div class="form-group text-center">
                         <button type="submit" class="btn btn-primary" name="submit" id="btnSubmit">Entrar</button>
                         <small id="passwordInfo" class="form-text text-muted">Não está cadastrado? <a href="<?=$diretorio?>user/register">clique aqui</a>.</small>
+                        <small id="passwordInfo" class="form-text text-muted"><a href="<?=$diretorio?>user/register">Esqueci minha senha</a></small>
                     </div>
                 </form>
             </div>

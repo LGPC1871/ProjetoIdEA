@@ -17,6 +17,9 @@ form label{
     font-weight: 600;
     font-size: small;
 }
+form a:hover{
+    text-decoration: none;
+}
 form button{
     text-transform: uppercase;
     font-weight: bold !important;

@@ -307,18 +307,9 @@ class User extends CI_Controller{
 
         $this->session->set_userdata($sessionData);
     }
-    private function destroySession(){
+    public function destroySession(){
         $this->session->unset_userdata('userData');
         $this->session->set_userdata('loggedIn', false);
-
-        $this->session->sess_destroy();
-
-        redirect('user');
-    }
-
-    public function userLogout(){
-        $this->session->set_userdata('loggedIn', false);
-        $this->session->unset_userdata('userData');
 
         $this->session->sess_destroy();
 
