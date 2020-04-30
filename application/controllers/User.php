@@ -78,49 +78,48 @@ class User extends CI_Controller{
             "error_list" => array()
         );
 
-        //Recolhe informacoes do formulario;
+        //Recolhe informacoes do formulario
         $email = $this->input->post("Email");
         $password = $this->input->post("Senha");
         
-        //Se o botao login for acionado
-        
-        if(empty($email) || empty($password)){
-            $response["status"] = 1;
-            $response["empty"] = 1;
-            if(empty($password))
-                array_push($response["error_list"], "#password");
-            if(empty($email))
+        $inputJson = array(
+            "#email" => $email,
+            "#password" => $password,
+        );
+        //Verifica se todos os campos foram preenchidos
+        foreach($inputJson as $key => $value){
+            if(empty($value) || $value == " " || ctype_space($value)){
+                $response['empty'] = 1;
+                $response['status'] = 1;
+                array_push($response["error_list"], $key);
+            }
+        }
+        //Validação do do Usuário
+        if($response['status'] == 0){
+            $userExist = $this->users->userExists($email);
+            if(!$userExist){
+                $response['status'] = 1;
                 array_push($response["error_list"], "#email");
-        }else{
-            
-            $this->form_validation->set_rules('Email', 'Email', 'required');
-            $this->form_validation->set_rules('Senha', 'Senha', 'required');
-
-            if($this->form_validation->run() == true){
-
-                $result = $this->users->getUserData($email);
-                
-                if($result){
-                    
-                    $userEmail = $result->AA_email;
-                    $passwordHash = $result->AA_password;
-
-                    if(password_verify($password, $passwordHash)){
-                        $this->session->set_userdata('loggedIn', true);
-                        $this->session->set_userdata('userData', $result);
-                    }else{
-                        $response["status"] = 1;
-                    }
-                }else{
-                    $response["status"] = 1;
-                }
             }else{
-                $response["status"] = 1;
-                }
-            if($response["status"] == 1){
+                $userData = $this->users->getUserData($email);
+            }
+        }
+        //Validação da senha
+        if($response['status'] == 0){
+            $userPassword = $userData->AA_password;
+
+            if(password_verify($password, $userPassword)){
+            }else{
+                $response['status'] = 1;
                 array_push($response["error_list"], "#email", "#password");
             }
         }
+        //Criando sessão
+        if($response['status'] == 0){
+            $this->session->set_userdata('loggedIn', true);
+            $this->session->set_userdata('userData', $userData);
+        }
+
         echo json_encode($response);
     }
     public function userLogout(){
