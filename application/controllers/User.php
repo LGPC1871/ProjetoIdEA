@@ -7,7 +7,7 @@ class User extends CI_Controller{
         $this->load->library('google');
         $this->config->load('google');
         $this->load->model('users');
-        $this->load->library('form_validation');  
+        $this->load->library('form_validation');
     }
     public function index(){
         if($this->session->userdata('loggedIn') == true){
@@ -116,20 +116,13 @@ class User extends CI_Controller{
         }
         //Criando sessão
         if($response['status'] == 0){
-            $this->session->set_userdata('loggedIn', true);
-            $this->session->set_userdata('userData', $userData);
+            $status = true;
+            $this->startSession($userData, $status);
         }
 
         echo json_encode($response);
     }
-    public function userLogout(){
-        $this->session->set_userdata('loggedIn', false);
-        $this->session->unset_userdata('userData');
-
-        $this->session->sess_destroy();
-
-        redirect('user');
-    }
+    
 /*
 |--------------------------------------------------------------------------
 | Login Google
@@ -160,25 +153,23 @@ class User extends CI_Controller{
             
         $userToken = $_POST['userToken'];
 
-        $data = $this->verifyGoogleUserData($client, $userToken);
+        $userData = $this->verifyGoogleUserData($client, $userToken);
         
-        if(!isset($data['Erro'])){
-            $userExist = $this->users->userExists($data['AA_email']);
+        if(!isset($userData['Erro'])){
+            $userExist = $this->users->userExists($userData['AA_email']);
 
             if($userExist){
-                $data['AA_updated'] = date("Y-m-d H:i:s");
-                $this->users->updateUserData($data);
+                $userData['AA_updated'] = date("Y-m-d H:i:s");
+                $this->users->updateUserData($userData);
             }else{
-                $data['AA_created'] = date("Y-m-d H:i:s");
-                $data['AA_updated'] = date("Y-m-d H:i:s");
-                $this->users->insertUserData($data);
+                $userData['AA_created'] = date("Y-m-d H:i:s");
+                $userData['AA_updated'] = date("Y-m-d H:i:s");
+                $this->users->insertUserData($userData);
             }
-            $this->session->set_userdata('loggedIn', true);
-            $this->session->set_userdata('userData', $data);
-            $this->echoUserData("Entrando...");
+            $this->startSession($userData, true);
         }else{
             //CASO OCORRA ALGUM ERRO
-            $this->echoUserData($data);
+            $this->echoUserData($userData);
         }
     }
 
@@ -300,5 +291,37 @@ class User extends CI_Controller{
         }
 
         echo json_encode($response);
+    }
+/* 
+|--------------------------------------------------------------------------
+| Sessão
+|--------------------------------------------------------------------------
+| Todas as funções de sessão
+*/
+
+    private function startSession($userData){
+        $sessionData = array(
+            "loggedIn" => true,
+            "userData" => $userData,
+        );
+
+        $this->session->set_userdata($sessionData);
+    }
+    private function destroySession(){
+        $this->session->unset_userdata('userData');
+        $this->session->set_userdata('loggedIn', false);
+
+        $this->session->sess_destroy();
+
+        redirect('user');
+    }
+
+    public function userLogout(){
+        $this->session->set_userdata('loggedIn', false);
+        $this->session->unset_userdata('userData');
+
+        $this->session->sess_destroy();
+
+        redirect('user');
     }
 }
