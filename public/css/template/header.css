@@ -32,7 +32,7 @@ nav{
 /*Menu*/
     #menu{
         z-index: 1;
-        margin-right: 5vw;
+        padding: 1rem;
     }
     #menu > ul> li{
         text-transform: uppercase;

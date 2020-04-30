@@ -25,6 +25,7 @@ class Users extends CI_Model{
                 $column => $value
             );
             $this->db->where($column, null);
+            $this->db->where('AA_Email', $userData['AA_email']);
             $this->db->update($this->pessoa, $data);
         }
     }
