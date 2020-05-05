@@ -8,12 +8,11 @@ $diretorio = base_url();
             <div class="col-xl-4 col-lg-5 col-md-6 col-sm-8 col-10" id="div-form">
                 <form action="" method="post" id="form">
                     <div class="form-group text-center">
-                        <h3>ENTRAR</h3>
+                        <h3>RECUPERAR SENHA</h3>
                         <hr />
-                        <div class="g-signin2" data-onsuccess="onSignIn" data-longtitle="true" data-theme="dark" id="botaoLoginGoogle" ></div>
+                        Sua senha será enviada por email:
                     </div>
                     <div class="form-group text-center">
-                        <h6>OU</h6>
                         <div class="helper no-error">
                             <span class="help-block"></span>
                         </div>
@@ -22,15 +21,9 @@ $diretorio = base_url();
                         <label for="email">Email</label>
                         <input type="email" class="form-control" name="Email" id="email" placeholder="Digite seu email">
                     </div>
-                    <div class="form-group">
-                        <label for="password">Senha</label>
-                        <input type="password" class="form-control" name="Senha" id="password" aria-describedby="passwordInfo" placeholder="Digite sua senha">
-                        <small id="passwordInfo" class="form-text text-muted">Não compartilhe sua senha com ninguém</small>
-                    </div>
                     <div class="form-group text-center">
-                        <button type="submit" class="btn btn-primary" name="submit" id="btnSubmit">Entrar</button>
-                        <small id="passwordInfo" class="form-text text-muted">Não está cadastrado? <a href="<?=$diretorio?>user/register">clique aqui</a>.</small>
-                        <small id="passwordInfo" class="form-text text-muted"><a href="<?=$diretorio?>user/forgotPassword">Esqueci minha senha</a></small>
+                        <button type="submit" class="btn btn-primary" name="submit" id="btnSubmit">Enviar Senha</button>
+                        <small id="passwordInfo" class="form-text text-muted"><a href="<?=$diretorio?>user/login">VOLTAR</a></small>
                     </div>
                 </form>
             </div>

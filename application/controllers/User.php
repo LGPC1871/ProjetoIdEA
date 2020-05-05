@@ -61,6 +61,17 @@ class User extends CI_Controller{
             $this->template->show('login.php', $content);
         }
     }
+    public function forgotPassword(){
+        if($this->session->userdata('loggedIn') == true){
+            redirect('user/index');
+        }else{
+            $content = array(
+                "styles" => array('form.css'),
+                "scripts" => array('form.js', 'passwordRecovery.js', 'util.js')
+            );
+            $this->template->show('password_recovery.php', $content);
+        }
+    }
 /*
 |--------------------------------------------------------------------------
 | Login
@@ -208,7 +219,7 @@ class User extends CI_Controller{
 | Todas as funções da funcionalidade de cadastro
 */
     public function registerAjax(){
-       if (!$this->input->is_ajax_request()) {
+        if (!$this->input->is_ajax_request()) {
 			exit("Nenhum acesso de script direto permitido!");
         }
 
@@ -314,5 +325,68 @@ class User extends CI_Controller{
         $this->session->sess_destroy();
 
         redirect('user');
+    }
+/* 
+|--------------------------------------------------------------------------
+| Senha
+|--------------------------------------------------------------------------
+| Todas as funções de senha do usuário
+*/
+    public function passwordRecovery(){
+        if (!$this->input->is_ajax_request()) {
+			exit("Nenhum acesso de script direto permitido!");
+        }
+
+        //Adicionando variavel json para usar no ajax
+        $response = array(
+            "status" => 0,
+            "empty" => 0,
+            "error_list" => array()
+        );
+
+        //Recolhe informacoes do formulario
+        $email = $this->input->post("Email");
+        
+        $inputJson = array(
+            "#email" => $email,
+        );
+
+        foreach($inputJson as $key => $value){
+            if(empty($value) || $value == " " || ctype_space($value)){
+                $response['empty'] = 1;
+                $response['status'] = 1;
+                array_push($response["error_list"], $key);
+            }
+        }
+
+        if($response['status'] == 0){
+            $userExist = $this->users->userExists($email);
+            if(!$userExist){
+                $response['status'] = 1;
+                array_push($response["error_list"], "#email");
+            }else{
+                $userData = $this->users->getUserEmailPassword($email);
+                $userEmail = $userData->AA_email;
+                $userPasswordHash = $userData->AA_password;                
+            }
+        }
+        if($response['status'] == 0){
+            
+            if((!strcmp($email, $user_email))){
+                $pass=$row->pass;
+                    /*Mail Code*/
+                    $to = $userEmail;
+                    $subject = "Recuperar Senha";
+                    $txt = "Sua senha é: $pass .";
+                    $headers = "From: noreply@idea.com";
+
+                    mail($to,$subject,$txt,$headers);
+            }else{
+                $response['status'] = 1;
+                array_push($response["error_list"], "#email");            
+            }
+        }
+
+        echo json_encode($response);
     }
 }

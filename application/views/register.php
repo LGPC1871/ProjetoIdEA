@@ -11,7 +11,7 @@ $diretorio = base_url();
                     <h2>FORMULÁRIO DE CADASTRO</h2>
                     <hr />
                     <div class="helper no-error">
-                        <span class="help-block">Preencha todos os campos</span>
+                        <span class="help-block"></span>
                     </div>
                 </div>
                 <div class="row justify-content-center">

@@ -45,4 +45,17 @@ class Users extends CI_Model{
         else
             return null;
     }
+
+    function getUserEmailPassword($userEmail){
+        $this->db->select('AA_email', 'AA_password')
+                 ->from($this->pessoa)
+                 ->where('AA_email', $userEmail);
+        
+        $result = $this->db->get();
+
+        if($result->num_rows() > 0)
+            return $result->row();
+        else
+            return null;
+    }
 }
