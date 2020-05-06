@@ -93,19 +93,19 @@ class User extends CI_Controller{
         $email = $this->input->post("Email");
         $password = $this->input->post("Senha");
         
-        $inputJson = array(
+        $inputArray = array(
             "#email" => $email,
             "#password" => $password,
         );
         //Verifica se todos os campos foram preenchidos
-        foreach($inputJson as $key => $value){
+        foreach($inputArray as $key => $value){
             if(empty($value) || $value == " " || ctype_space($value)){
                 $response['empty'] = 1;
                 $response['status'] = 1;
                 array_push($response["error_list"], $key);
             }
         }
-        //Validação do do Usuário
+        //Validação do Usuário
         if($response['status'] == 0){
             $userExist = $this->users->userExists($email);
             if(!$userExist){
@@ -117,10 +117,9 @@ class User extends CI_Controller{
         }
         //Validação da senha
         if($response['status'] == 0){
-            $userPassword = $userData->AA_password;
+            $userPassword = $userData->AA_senha;
 
-            if(password_verify($password, $userPassword)){
-            }else{
+            if(!password_verify($password, $userPassword)){
                 $response['status'] = 1;
                 array_push($response["error_list"], "#email", "#password");
             }
@@ -318,12 +317,11 @@ class User extends CI_Controller{
 
         $this->session->set_userdata($sessionData);
     }
+
     public function destroySession(){
         $this->session->unset_userdata('userData');
         $this->session->set_userdata('loggedIn', false);
-
         $this->session->sess_destroy();
-
         redirect('user');
     }
 /* 
