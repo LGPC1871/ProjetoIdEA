@@ -70,7 +70,7 @@ class Users extends CI_Model{
 |--------------------------------------------------------------------------
 | Todas as funções INSERT
 */
-    function insertUserData($userData){
+    function insertNewUser($userData){
         $this->db->insert($this->pessoa, $userData);
     }
 }

@@ -113,6 +113,7 @@ class User extends CI_Controller{
                 array_push($response["error_list"], "#email");
             }else{
                 $userData = $this->users->getUserData($email);
+                /*ADICIONAR FUNCAO PARA VERIFICAR PAPEL DO USUÁRIO E ATRIBUIR A userData */
             }
         }
         //Validação da senha
@@ -221,7 +222,7 @@ class User extends CI_Controller{
         if (!$this->input->is_ajax_request()) {
 			exit("Nenhum acesso de script direto permitido!");
         }
-
+        //array de resposta para a requisição ajax
         $response = array(
             "status" => 0,
             "empty" => 0,
@@ -234,7 +235,7 @@ class User extends CI_Controller{
         $senha = $this->input->post("Senha");
         $senhaConfirma = $this->input->post("Senha2");
 
-        $inputJson = array(
+        $inputArray = array(
             "#firstName" => $firstName,
             "#lastName" => $lastName,
             "#email" => $email,
@@ -242,7 +243,7 @@ class User extends CI_Controller{
             "#passwordConfirm" => $senhaConfirma
         );
 
-        foreach($inputJson as $key => $value){
+        foreach($inputArray as $key => $value){
             if(empty($value) || $value == " " || ctype_space($value)){
                 $response['empty'] = 1;
                 $response['status'] = 1;
@@ -289,15 +290,16 @@ class User extends CI_Controller{
             $time = date("Y-m-d H:i:s");
             $userData = array(
                 'AA_email' => $email,
-                'AA_fullName' => $fullName,
-                'AA_firstName' => $firstName,
-                'AA_lastName' => $lastName,
-                'AA_password' => $passwordHash,
+                'AA_nomeCompleto' => $fullName,
+                'AA_nome' => $firstName,
+                'AA_sobrenome' => $lastName,
+                'AA_senha' => $passwordHash,
                 'AA_created' => $time,
                 'AA_updated' => $time,
+                'AD_id' => 1
             );
             
-            $this->users->insertUserData($userData);
+            $this->users->insertNewUser($userData);
         }
 
         echo json_encode($response);
