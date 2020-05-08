@@ -62,12 +62,4 @@ class Users extends CI_Model{
             return false;
         }
     }
-
-    function insertThirdPartyData($dataInput){
-        if(!isset($dataInput['AA_id'])){
-            return false;
-        }else{
-            $this->db->insert($this->pessoaTerceiro, $dataInput);
-        }
-    }
 }
