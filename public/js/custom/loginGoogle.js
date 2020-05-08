@@ -22,7 +22,8 @@ function sendUserTokenToBackend(userData){
             loadingRequest(0);
             $("#botaoLogin").prop('disabled', true);
         },
-        success: function(){
+        success: function(json){
+            console.log(json);
             loadingRequest(1);
             window.location = BASE_URL + "user/profile";
         },

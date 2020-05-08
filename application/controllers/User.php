@@ -8,7 +8,29 @@ class User extends CI_Controller{
         $this->config->load('google');
         $this->load->model('users');
         $this->load->library('form_validation');
+
+        $this->AA_pessoa = 'AA_pessoa';
+            $this->AA_id = 'AA_id';
+            $this->AA_email = 'AA_email';
+            $this->AA_nomeCompleto = 'AA_nomeCompleto';
+            $this->AA_nome = 'AA_nome';
+            $this->AA_sobrenome = 'AA_sobrenome';
+            $this->AA_senha = 'AA_senha';
+            $this->AA_created = 'AA_created';
+            $this->AA_updated = 'AA_updated';
+
+        $this->AB_pessoaTerceiro = 'AB_pessoaTerceiro';
+            $this->AB_pessoaTerceiroId = 'AB_pessoaTerceiroId';
+
+        $this->AC_terceiro = 'AC_terceiro';
+            $this->AC_id = 'AC_id';
+            $this->AC_nome = 'AC_nome';
+
+        $this->AD_privilegios = 'AD_privilegios';
+            $this->AD_id = 'AD_id';
+            $this->AD_nome = 'AD_nome';
     }
+
     public function index(){
         if($this->session->userdata('loggedIn') == true){
             redirect('user/profile');
@@ -107,17 +129,24 @@ class User extends CI_Controller{
         }
         //Validação do Usuário
         if($response['status'] == 0){
-            $userExist = $this->users->userExists($email);
-            if(!$userExist){
+            
+            $userExist = $this->users->selectFromDatabase($this->AA_id, $this->AA_pessoa, array($this->AA_email => $email));
+
+            if($userExist){
+
+                $userData = $this->users->selectFromDatabase('*', $this->AA_pessoa, array($this->AA_email => $email));
+                /*ADICIONAR FUNCAO PARA VERIFICAR PAPEL DO USUÁRIO E ATRIBUIR A userData */
+                
+            }else{
+                
                 $response['status'] = 1;
                 array_push($response["error_list"], "#email");
-            }else{
-                $userData = $this->users->getUserData($email);
-                /*ADICIONAR FUNCAO PARA VERIFICAR PAPEL DO USUÁRIO E ATRIBUIR A userData */
+
             }
         }
         //Validação da senha
         if($response['status'] == 0){
+            
             $userPassword = $userData->AA_senha;
 
             if(!password_verify($password, $userPassword)){
@@ -136,7 +165,7 @@ class User extends CI_Controller{
     
 /*
 |--------------------------------------------------------------------------
-| Login Google
+| Login/Cadastro Google
 |--------------------------------------------------------------------------
 | Todas as funções login google
 */
@@ -164,23 +193,43 @@ class User extends CI_Controller{
             
         $userToken = $_POST['userToken'];
 
-        $userData = $this->verifyGoogleUserData($client, $userToken);
+        $googleUserData = $this->verifyGoogleUserData($client, $userToken);
         
-        if(!isset($userData['Erro'])){
-            $userExist = $this->users->userExists($userData['AA_email']);
+        if(!isset($googleUserData['Erro'])){
+            
+            $time = date("Y-m-d H:i:s");
+            $userExist = $this->users->selectFromDatabase($this->AA_id, $this->AA_pessoa, array($this->AA_email => $googleUserData["userData"][$this->AA_email]));
 
             if($userExist){
-                $userData['AA_updated'] = date("Y-m-d H:i:s");
-                $this->users->updateUserData($userData);
+
+                $googleUserData["userData"]['AA_updated'] = $time;
+                $this->users->updateUserData($googleUserData);
+
             }else{
-                $userData['AA_created'] = date("Y-m-d H:i:s");
-                $userData['AA_updated'] = date("Y-m-d H:i:s");
-                $this->users->insertUserData($userData);
+
+                $googleUserData["userData"][$this->AA_created] = $time;
+                $googleUserData["userData"][$this->AA_updated] = $time;
+
+                $pessoaId = $this->users->insertIntoDatabase($this->AA_pessoa, $googleUserData["userData"]);
+
+                $selectTerceiro = $this->users->selectFromDatabase($this->AC_id, $this->AC_terceiro, array($this->AC_nome => "google"));
+                $terceiroId = intval($selectTerceiro->AC_id);
+
+                $pessoaTerceiroId = $googleUserData["thirdParty"][$this->AB_pessoaTerceiroId];
+
+                $insertArray = array(
+                    $this->AA_id => $pessoaId,
+                    $this->AC_id => $terceiroId,
+                    $this->AB_pessoaTerceiroId => $pessoaTerceiroId
+                );
+
+                $this->users->insertIntoDatabase($this->AB_pessoaTerceiro, $insertArray);
             }
-            $this->startSession($userData, true);
+
+            $this->startSession($googleUserData["userData"], true);
+
         }else{
-            //CASO OCORRA ALGUM ERRO
-            $this->echoUserData($userData);
+            $this->echoUserData($googleUserData["Erro"]);
         }
     }
 
@@ -192,15 +241,21 @@ class User extends CI_Controller{
         if($payload){
             if($payload['email_verified']){
                 if($payload['name'] != ""){
-                    $userData = array(
-                        'AA_googleId' => $payload['sub'],
-                        'AA_email' => $payload['email'],
-                        'AA_fullName' => $payload['name'],
-                        'AA_firstName' => $payload['given_name'],
-                        'AA_lastName' => $payload['family_name'],
-                        'AA_picture' => $payload['picture'],
+                    $response = array(
+                        "thirdParty" => array(
+                            $this->AC_nome => 'google',
+                            $this->AB_pessoaTerceiroId => $payload['sub'],
+                        ),
+                        "userData" => array(
+                            $this->AA_email => $payload['email'],
+                            $this->AA_nomeCompleto => $payload['name'],
+                            $this->AA_nome => $payload['given_name'],
+                            $this->AA_sobrenome => $payload['family_name'],
+                            $this->AD_id => 1
+                        )
+                   
                     );
-                    return $userData;
+                    return $response;
                 }else{
                     $erros['Erro'] = "Erro: nome invalido!";
                 }
@@ -268,7 +323,7 @@ class User extends CI_Controller{
         if($response['status'] == 0){
             //verificar Email
             $email = filter_var($email, FILTER_SANITIZE_EMAIL);
-            $result = $this->users->userExists($email);
+            $result = $this->users->selectFromDatabase('AA_id', 'AA_pessoa', array('AA_email' => $email));
             if(!filter_var($email, FILTER_VALIDATE_EMAIL) || $result){
                 $response['status'] = 1;
                 array_push($response["error_list"], "#email");
@@ -288,18 +343,20 @@ class User extends CI_Controller{
 
         if($response['status'] == 0){
             $time = date("Y-m-d H:i:s");
-            $userData = array(
-                'AA_email' => $email,
-                'AA_nomeCompleto' => $fullName,
-                'AA_nome' => $firstName,
-                'AA_sobrenome' => $lastName,
-                'AA_senha' => $passwordHash,
-                'AA_created' => $time,
-                'AA_updated' => $time,
-                'AD_id' => 1
+            $inputData = array(
+                "userData" => array(
+                    'AA_email' => $email,
+                    'AA_nomeCompleto' => $fullName,
+                    'AA_nome' => $firstName,
+                    'AA_sobrenome' => $lastName,
+                    'AA_senha' => $passwordHash,
+                    'AA_created' => $time,
+                    'AA_updated' => $time,
+                    'AD_id' => 1
+                )
             );
             
-            $this->users->insertNewUser($userData);
+            $this->users->insertNewUser($inputData);
         }
 
         echo json_encode($response);
