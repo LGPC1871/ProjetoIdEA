@@ -206,7 +206,7 @@ class User extends CI_Controller{
                 $this->users->updateUserData($googleUserData);
 
             }else{
-
+                
                 $googleUserData["userData"][$this->AA_created] = $time;
                 $googleUserData["userData"][$this->AA_updated] = $time;
 
