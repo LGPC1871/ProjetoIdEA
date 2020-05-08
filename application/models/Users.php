@@ -45,12 +45,6 @@ class Users extends CI_Model{
 |--------------------------------------------------------------------------
 | Todas as funções INSERT
 */
-    /*function insertNewUser($dataInput){
-        $insertData = $dataInput["userData"];
-
-        $this->db->insert($this->pessoa, $insertData);
-    }*/
-
     function insertIntoDatabase($table, $data = array()){
         $this->db->insert($table, $data);
 
