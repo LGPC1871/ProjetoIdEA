@@ -9,31 +9,22 @@ class User extends CI_Controller{
         $this->load->model('users');
         $this->load->library('form_validation');
 
-        $this->AA_pessoa = 'AA_pessoa';
-            $this->AA_id = 'AA_id';
-            $this->AA_email = 'AA_email';
-            $this->AA_nomeCompleto = 'AA_nomeCompleto';
-            $this->AA_nome = 'AA_nome';
-            $this->AA_sobrenome = 'AA_sobrenome';
-            $this->AA_senha = 'AA_senha';
-            $this->AA_created = 'AA_created';
-            $this->AA_updated = 'AA_updated';
-
-        $this->AB_pessoaTerceiro = 'AB_pessoaTerceiro';
-            $this->AB_pessoaTerceiroId = 'AB_pessoaTerceiroId';
-
-        $this->AC_terceiro = 'AC_terceiro';
-            $this->AC_id = 'AC_id';
-            $this->AC_nome = 'AC_nome';
-
-        $this->AD_privilegios = 'AD_privilegios';
-            $this->AD_id = 'AD_id';
-            $this->AD_nome = 'AD_nome';
+        $this->default_session_data =array(
+            "status" => false,
+            "user_data" => array(),
+            "has_password" => false,
+            "user_privilege" => array()
+        );
+        $this->session_data = $this->default_session_data;
     }
 
     public function index(){
-        if($this->session->userdata('loggedIn') == true){
-            redirect('user/profile');
+        if($this->session->userdata("status") == true){
+            if($this->session->userdata("has_password") == true){
+                redirect('user/profile');
+            }else{
+                redirect('user/password_define');
+            }
         }else{
             redirect('user/login');
         }
@@ -54,14 +45,18 @@ class User extends CI_Controller{
 | Todas as funções do contexto view
 */
     public function profile(){
-        if($this->session->userdata('loggedIn') == true){
+        if($this->session->userdata("status") == true && $this->session->userdata("has_password") == true){
+            $content = array(
+                "styles" => array('form.css', 'register.css'),
+            );
             $this->template->show('profile.php');
         }else{
             redirect('user/index');
         }
     }
+
     public function register(){
-        if($this->session->userdata('loggedIn') == true){
+        if($this->session->userdata("status") == true){
             redirect('user/index');
         }else{
             $content = array(
@@ -71,8 +66,9 @@ class User extends CI_Controller{
             $this->template->show('register.php', $content);
         }
     }
+
     public function login(){
-        if($this->session->userdata('loggedIn') == true){
+        if($this->session->userdata("status") == true){
             redirect('user/index');
         }else{
             $content = array(
@@ -83,8 +79,9 @@ class User extends CI_Controller{
             $this->template->show('login.php', $content);
         }
     }
+
     public function forgotPassword(){
-        if($this->session->userdata('loggedIn') == true){
+        if($this->session->userdata("status") == true){
             redirect('user/index');
         }else{
             $content = array(
@@ -93,6 +90,14 @@ class User extends CI_Controller{
             );
             $this->template->show('password_recovery.php', $content);
         }
+    }
+
+    public function password_define(){
+        $content = array(
+            "styles" => array('form.css'),
+            "scripts" => array('form.js', 'util.js', 'passwordDefine.js')
+        );
+        $this->template->show('password_define.php', $content);
     }
 /*
 |--------------------------------------------------------------------------
@@ -114,7 +119,7 @@ class User extends CI_Controller{
         //Recolhe informacoes do formulario
         $email = $this->input->post("Email");
         $password = $this->input->post("Senha");
-        
+    
         $inputArray = array(
             "#email" => $email,
             "#password" => $password,
@@ -130,39 +135,43 @@ class User extends CI_Controller{
         //Validação do Usuário
         if($response['status'] == 0){
             
-            $userExist = $this->users->selectFromDatabase($this->AA_id, $this->AA_pessoa, array($this->AA_email => $email));
+            $userData = $this->users->selectUserData($email);
 
-            if($userExist){
-
-                $userData = $this->users->selectFromDatabase('*', $this->AA_pessoa, array($this->AA_email => $email));
-                /*ADICIONAR FUNCAO PARA VERIFICAR PAPEL DO USUÁRIO E ATRIBUIR A userData */
-                
-            }else{
-                
+            if(!$userData){
                 $response['status'] = 1;
                 array_push($response["error_list"], "#email");
-
             }
         }
         //Validação da senha
         if($response['status'] == 0){
-            
-            $userPassword = $userData->AA_senha;
+            if(password_verify($password, $userData["senha"])){
+                $password = "";
+                unset($userData["senha"]);
+                $this->session_data["user_data"] = $userData;
+            }else{
+                $response['status'] = 1;
+                array_push($response["error_list"], "#email", "#password");
+            }
+        }
+        //verificar privilégio do usuário
+        if($response['status'] == 0){
+            $userPrivilege = $this->users->verifyUserPrivilege($userData["idprivilegio"]);
 
-            if(!password_verify($password, $userPassword)){
+            if($userPrivilege){
+                $this->session_data["user_privilege"] = $userPrivilege;
+            }else{
                 $response['status'] = 1;
                 array_push($response["error_list"], "#email", "#password");
             }
         }
         //Criando sessão
         if($response['status'] == 0){
-            $status = true;
-            $this->startSession($userData, $status);
+            $this->session_data["status"] = true;
+            $this->startSession($this->session_data);
         }
 
         echo json_encode($response);
-    }
-    
+    } 
 /*
 |--------------------------------------------------------------------------
 | Login/Cadastro Google
@@ -173,64 +182,45 @@ class User extends CI_Controller{
         if (!$this->input->is_ajax_request()) {
 			exit("Nenhum acesso de script direto permitido!");
         }
-        
-        //Google Client Instance
-            $client = new Google_Client();
+        $response = array(
+            "status" => 0,
+            "teste" => array('1', '2'),
+        );
 
-            $config = $this->config->item('google');
+        $client = $this->googleClientInstance();
 
-            $client->setAccessType("offline");
-
-            $client->setClientId($config['client_id']);
-
-            $client->setClientSecret($config['client_secret']);
-
-            $client->setRedirectUri($config['redirect_uri']);
-
-            foreach($config['scopes'] as $scope){
-                $client->addScope($scope);
-            }
-            
         $userToken = $_POST['userToken'];
 
         $googleUserData = $this->verifyGoogleUserData($client, $userToken);
         
-        if(!isset($googleUserData['Erro'])){
-            
-            $time = date("Y-m-d H:i:s");
-            $userExist = $this->users->selectFromDatabase($this->AA_id, $this->AA_pessoa, array($this->AA_email => $googleUserData["userData"][$this->AA_email]));
+        $userId = $this->users->getUserId($googleUserData["userData"]["email"]);
+
+        if(isset($googleUserData['Erro'])){
+            $response['status'] = 1;
+        }
+
+        if($response['status'] == 0){
+            $userExist = $this->users->userExists($googleUserData["userData"]["email"]);
 
             if($userExist){
-
-                $googleUserData["userData"]['AA_updated'] = $time;
-                $this->users->updateUserData($googleUserData);
+                
+                $this->users->updateGoogleUser($googleUserData, $userId);
 
             }else{
-                
-                $googleUserData["userData"][$this->AA_created] = $time;
-                $googleUserData["userData"][$this->AA_updated] = $time;
-
-                $pessoaId = $this->users->insertIntoDatabase($this->AA_pessoa, $googleUserData["userData"]);
-
-                $selectTerceiro = $this->users->selectFromDatabase($this->AC_id, $this->AC_terceiro, array($this->AC_nome => "google"));
-                $terceiroId = intval($selectTerceiro->AC_id);
-
-                $pessoaTerceiroId = $googleUserData["thirdParty"][$this->AB_pessoaTerceiroId];
-
-                $insertArray = array(
-                    $this->AA_id => $pessoaId,
-                    $this->AC_id => $terceiroId,
-                    $this->AB_pessoaTerceiroId => $pessoaTerceiroId
-                );
-
-                $this->users->insertIntoDatabase($this->AB_pessoaTerceiro, $insertArray);
+                $this->users->insertGoogleUser($googleUserData);
             }
 
-            $this->startSession($googleUserData["userData"], true);
+            $userData = $this->users->selectUserData($googleUserData["userData"]["email"]);
+            $this->session_data["user_data"] = $userData;
 
-        }else{
-            $this->echoUserData($googleUserData["Erro"]);
+            $userPrivilege = $this->users->verifyUserPrivilege($userData["idprivilegio"]);
+            $this->session_data["user_privilege"] = $userPrivilege;
+
+            $this->session_data["status"] = true;
+            $this->startSession($this->session_data);
+
         }
+        echo json_encode($response);
     }
 
     private function verifyGoogleUserData($client, $userToken){
@@ -243,15 +233,14 @@ class User extends CI_Controller{
                 if($payload['name'] != ""){
                     $response = array(
                         "thirdParty" => array(
-                            $this->AC_nome => 'google',
-                            $this->AB_pessoaTerceiroId => $payload['sub'],
+                            "thirdId" => 1,
+                            "id" => $payload['sub'],
                         ),
                         "userData" => array(
-                            $this->AA_email => $payload['email'],
-                            $this->AA_nomeCompleto => $payload['name'],
-                            $this->AA_nome => $payload['given_name'],
-                            $this->AA_sobrenome => $payload['family_name'],
-                            $this->AD_id => 1
+                            "email" => $payload['email'],
+                            "nomecompleto" => $payload['name'],
+                            "nome" => $payload['given_name'],
+                            "sobrenome" => $payload['family_name'],
                         )
                    
                     );
@@ -267,6 +256,26 @@ class User extends CI_Controller{
         }
         return $erros;
     }
+
+    public function googleClientInstance(){
+        //Google Client Instance
+        $client = new Google_Client();
+
+        $config = $this->config->item('google');
+
+        $client->setAccessType("offline");
+
+        $client->setClientId($config['client_id']);
+
+        $client->setClientSecret($config['client_secret']);
+
+        $client->setRedirectUri($config['redirect_uri']);
+
+        foreach($config['scopes'] as $scope){
+            $client->addScope($scope);
+        }
+        return $client;
+    }
 /* 
 |--------------------------------------------------------------------------
 | Cadastro
@@ -281,7 +290,8 @@ class User extends CI_Controller{
         $response = array(
             "status" => 0,
             "empty" => 0,
-            "error_list" => array()
+            "error_list" => array(),
+            "generic_error" => false
         );
         
         $firstName = $this->input->post("Nome");
@@ -323,8 +333,10 @@ class User extends CI_Controller{
         if($response['status'] == 0){
             //verificar Email
             $email = filter_var($email, FILTER_SANITIZE_EMAIL);
-            $result = $this->users->selectFromDatabase('AA_id', 'AA_pessoa', array('AA_email' => $email));
-            if(!filter_var($email, FILTER_VALIDATE_EMAIL) || $result){
+
+            $userExist = $this->users->userExists($email);
+
+            if(!filter_var($email, FILTER_VALIDATE_EMAIL) || $userExist){
                 $response['status'] = 1;
                 array_push($response["error_list"], "#email");
             }
@@ -342,21 +354,20 @@ class User extends CI_Controller{
         }
 
         if($response['status'] == 0){
-            $time = date("Y-m-d H:i:s");
-            $inputData = array(
-                "userData" => array(
-                    'AA_email' => $email,
-                    'AA_nomeCompleto' => $fullName,
-                    'AA_nome' => $firstName,
-                    'AA_sobrenome' => $lastName,
-                    'AA_senha' => $passwordHash,
-                    'AA_created' => $time,
-                    'AA_updated' => $time,
-                    'AD_id' => 1
-                )
+            $userData = array(
+                    "email" => $email,
+                    "nomecompleto" => $fullName,
+                    "nome" => $firstName,
+                    "sobrenome" => $lastName,
+                    "senha" => $passwordHash,
             );
             
-            $this->users->insertNewUser($inputData);
+            $result = $this->users->insertNewUser($userData);
+
+            if(!$result){
+                $response["status"] = 1;
+                $response["generic_error"] = true;
+            }
         }
 
         echo json_encode($response);
@@ -368,20 +379,23 @@ class User extends CI_Controller{
 | Todas as funções de sessão
 */
 
-    private function startSession($userData){
-        $sessionData = array(
-            "loggedIn" => true,
-            "userData" => $userData,
-        );
+    private function startSession($sessionData){
+
+        $sessionData['has_password'] = $this->users->userHasPassword($sessionData['user_data']['id']);
 
         $this->session->set_userdata($sessionData);
+        $this->session_data = $this->default_session_data;
+
     }
 
     public function destroySession(){
-        $this->session->unset_userdata('userData');
-        $this->session->set_userdata('loggedIn', false);
+
+        $this->session->unset_userdata('user_data');
+        $this->session->unset_userdata('user_privilege');
+        $this->session->set_userdata('status', false);
         $this->session->sess_destroy();
         redirect('user');
+
     }
 /* 
 |--------------------------------------------------------------------------
@@ -389,26 +403,27 @@ class User extends CI_Controller{
 |--------------------------------------------------------------------------
 | Todas as funções de senha do usuário
 */
-    public function passwordRecovery(){
+    public function passwordDefineAjax(){
         if (!$this->input->is_ajax_request()) {
 			exit("Nenhum acesso de script direto permitido!");
         }
-
-        //Adicionando variavel json para usar no ajax
+        
         $response = array(
             "status" => 0,
             "empty" => 0,
-            "error_list" => array()
+            "error_list" => array(),
+            "generic_error" => false
         );
 
-        //Recolhe informacoes do formulario
-        $email = $this->input->post("Email");
-        
-        $inputJson = array(
-            "#email" => $email,
+        $senha = $this->input->post("senha");
+        $senhaConfirma = $this->input->post("confirma");
+
+        $inputArray = array(
+            "#password" => $senha,
+            "#passwordConfirm" => $senhaConfirma,
         );
 
-        foreach($inputJson as $key => $value){
+        foreach($inputArray as $key => $value){
             if(empty($value) || $value == " " || ctype_space($value)){
                 $response['empty'] = 1;
                 $response['status'] = 1;
@@ -417,33 +432,26 @@ class User extends CI_Controller{
         }
 
         if($response['status'] == 0){
-            $userExist = $this->users->userExists($email);
-            if(!$userExist){
-                $response['status'] = 1;
-                array_push($response["error_list"], "#email");
+            if($senha == $senhaConfirma){
+                $passwordHash = password_hash($senha, PASSWORD_DEFAULT);
             }else{
-                $userData = $this->users->getUserEmailPassword($email);
-                $userEmail = $userData->AA_email;
-                $userPasswordHash = $userData->AA_password;                
+                $response['status'] = 1;
+                array_push($response["error_list"], "#password");
+                array_push($response["error_list"], "#passwordConfirm");
             }
         }
+
         if($response['status'] == 0){
-            
-            if((!strcmp($email, $user_email))){
-                $pass=$row->pass;
-                    /*Mail Code*/
-                    $to = $userEmail;
-                    $subject = "Recuperar Senha";
-                    $txt = "Sua senha é: $pass .";
-                    $headers = "From: noreply@idea.com";
+            $userId = $this->session->userdata('user_data')['id'];
 
-                    mail($to,$subject,$txt,$headers);
-            }else{
+            $result = $this->users->setUserPassword($userId, $passwordHash);
+
+            if(!$result){
                 $response['status'] = 1;
-                array_push($response["error_list"], "#email");            
+                $response['generic_error'] = true;
             }
         }
 
-        echo json_encode($response);
+        echo json_encode($result);
     }
 }

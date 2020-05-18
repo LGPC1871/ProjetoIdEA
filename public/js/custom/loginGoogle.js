@@ -15,21 +15,40 @@ function onSignIn(googleUser) {
 function sendUserTokenToBackend(userData){
     $.ajax({
         type: "POST",
-        url: BASE_URL + 'user/googleAjaxLogin',
+        url: `${BASE_URL}user/googleAjaxLogin`,
+        dataType: "json",
         data: userData,
+
         beforeSend: function(){
+
             formStatus(0);
+            showHelperErrors(false);
             loadingRequest(0);
             $("#botaoLogin").prop('disabled', true);
+
         },
-        success: function(json){
-            console.log(json);
-            loadingRequest(1);
-            window.location = BASE_URL + "user/profile";
+        success: function(response){
+            console.log(response);
+            if(response["status"] == 0){
+
+                loadingRequest(1);
+                window.location = BASE_URL + "user/index";
+
+            }else{
+
+                genericError();
+                formStatus(1)
+                $("#botaoLogin").prop('disabled', false);
+
+            }
+
         },
         error: function(){
+
+            genericError(1);
             formStatus(1);
             $("#botaoLogin").prop('disabled', false);
+            
         }
     })
 }

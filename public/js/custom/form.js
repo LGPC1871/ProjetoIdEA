@@ -5,8 +5,9 @@
 | Todas as constantes de cadastro
 */
 const TEXTO_BOTAO_GOOGLE =              "Entrar com Google";
+const MENSAGEM_ERRO_GENERICO =          "Ocorreu um erro";
 const MENSAGEM_ERRO =                   "inválido";
-const MENSAGEM_PADRAO =                 "Preencha os campos";
+const MENSAGEM_PADRAO_VAZIO =           "Preencha os campos";
 const MENSAGEM_VERIFICANDO =            "Verificando...";
 const MENSAGEM_SUCESSO =                "Sucesso...";
 const FA_INFORMACAO =                   "<i class='fas fa-info-circle fa-lg'></i>&nbsp";
@@ -20,7 +21,7 @@ const FA_CARREGANDO =                   "<i class='fas fa-circle-notch fa-spin'>
 | Todas funções que iniciam no load
 */
     $(document).ready(function(){
-        $(".help-block").html(FA_INFORMACAO + MENSAGEM_PADRAO);
+        $(".help-block").html(FA_INFORMACAO + MENSAGEM_PADRAO_VAZIO);
     });
 /*
 |--------------------------------------------------------------------------
@@ -105,5 +106,10 @@ const FA_CARREGANDO =                   "<i class='fas fa-circle-notch fa-spin'>
         else{
             console.log('invalid param for formStatus');
         }
+    }
+
+    function genericError(){
+        showHelperErrors(true);
+        $(".help-block").html(FA_EXCLAMACAO + MENSAGEM_ERRO_GENERICO);
     }
 

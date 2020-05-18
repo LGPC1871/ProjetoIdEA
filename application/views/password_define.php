@@ -10,12 +10,13 @@ $diretorio = base_url();
                     <div class="form-group text-center">
                         <h3>DEFINIR SENHA</h3>
                         <hr />
-                        Defina sua senha:
-                    </div>
                     <div class="form-group text-center">
                         <div class="helper no-error">
                             <span class="help-block"></span>
                         </div>
+                    </div>
+                        <small id="passwordFor" class="form-text text-muted">é necessário definir uma senha antes de prosseguir</small>
+                        Defina sua senha:
                     </div>
                     <div class="form-group">
                         <label for="senha">Senha</label>
@@ -27,7 +28,7 @@ $diretorio = base_url();
                     </div>
                     <div class="form-group text-center">
                         <button type="submit" class="btn btn-primary" name="submit" id="btnSubmit">Enviar Senha</button>
-                        <small id="passwordInfo" class="form-text text-muted"><a href="<?=$diretorio?>user/login">VOLTAR</a></small>
+                        <small id="passwordInfo" class="form-text text-muted"><a href="<?=$diretorio?>user/destroySession">VOLTAR</a></small>
                     </div>
                 </form>
             </div>
