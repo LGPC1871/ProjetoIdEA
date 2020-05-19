@@ -18,7 +18,7 @@ class User extends CI_Controller{
         $this->session_data = $this->default_session_data;
     }
 
-    public function index(){
+    public function index(){ 
         if($this->session->userdata("status") == true){
             if($this->session->userdata("has_password") == true){
                 redirect('user/profile');
@@ -449,9 +449,13 @@ class User extends CI_Controller{
             if(!$result){
                 $response['status'] = 1;
                 $response['generic_error'] = true;
+            }else{
+                $userHasPassword = $this->users->userHasPassword($this->session->userdata('user_data')["id"]);
+
+                $this->session->set_userdata("has_password", $userHasPassword);
             }
         }
 
-        echo json_encode($result);
+        echo json_encode($response);
     }
 }

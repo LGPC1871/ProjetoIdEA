@@ -81,7 +81,7 @@ class Users extends CI_Model{
         $result = $this->db->get();
         if($result->num_rows() == 1){
             $data = $result->row_array();
-            if($data[$this->pessoa_senha] != NULL){
+            if(!empty($data[$this->pessoa_senha])){
                 return true;
             }else{
                 return false;
