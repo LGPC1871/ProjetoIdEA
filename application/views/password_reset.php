@@ -10,7 +10,7 @@ $diretorio = base_url();
                     <div class="form-group text-center">
                         <h3>RECUPERAR SENHA</h3>
                         <hr />
-                        Sua senha será enviada por email:
+                        Um link para resetar sua senha será enviado para seu email:
                     </div>
                     <div class="form-group text-center">
                         <div class="helper no-error">
@@ -22,7 +22,7 @@ $diretorio = base_url();
                         <input type="email" class="form-control" name="Email" id="email" placeholder="Digite seu email">
                     </div>
                     <div class="form-group text-center">
-                        <button type="submit" class="btn btn-primary" name="submit" id="btnSubmit">Enviar Senha</button>
+                        <button type="submit" class="btn btn-primary" name="submit" id="btnSubmit">Enviar Email</button>
                         <small id="passwordInfo" class="form-text text-muted"><a href="<?=$diretorio?>user/login">VOLTAR</a></small>
                     </div>
                 </form>

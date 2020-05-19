@@ -80,15 +80,15 @@ class User extends CI_Controller{
         }
     }
 
-    public function forgotPassword(){
+    public function password_reset(){
         if($this->session->userdata("status") == true){
             redirect('user/index');
         }else{
             $content = array(
                 "styles" => array('form.css'),
-                "scripts" => array('form.js', 'passwordRecovery.js', 'util.js')
+                "scripts" => array('form.js', 'passwordReset.js', 'util.js')
             );
-            $this->template->show('password_recovery.php', $content);
+            $this->template->show('password_reset.php', $content);
         }
     }
 
@@ -457,5 +457,65 @@ class User extends CI_Controller{
         }
 
         echo json_encode($response);
+    }
+
+    public function passwordResetAjax(){
+        if (!$this->input->is_ajax_request()) {
+			exit("Nenhum acesso de script direto permitido!");
+        }
+
+        $response = array(
+            "status" => 0,
+            "empty" => 0,
+            "error_list" => array()
+        );
+        
+        $email = $this->input->post("Email");
+
+        $inputArray = array(
+            "#email" => $email,
+        );
+
+        foreach($inputArray as $key => $value){
+            if(empty($value) || $value == " " || ctype_space($value)){
+                $response['empty'] = 1;
+                $response['status'] = 1;
+                array_push($response["error_list"], $key);
+            }
+        }
+
+        if($response['status'] == 0){
+            //verificar Email
+            $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+
+            if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+                $response['status'] = 1;
+                array_push($response["error_list"], "#email");
+            }
+        }
+
+        if($response['status'] == 0){
+            $userExist = $this->users->userExists($email);
+
+            if($userExist){
+                $response = $this->sendEmail($email);
+            }
+        }
+        echo json_encode($response);
+    }
+
+    public function sendEmail(){
+        $htmlContent = '<h1>Sending email via SMTP server</h1>';
+        $htmlContent .= '<p>This email has sent via SMTP server from CodeIgniter application.</p>';
+        $this->email->from('idea.unicamp.teste@gmail.com', 'idea');
+        $this->email->to('lgpc1871@gmail.com');
+
+        $this->email->subject('Email Test');
+        $this->email->message($htmlContent);
+
+        $this->email->send();
+        $retorno = $this->email->print_debugger();
+
+        return $retorno;
     }
 }
