@@ -93,11 +93,43 @@ class User extends CI_Controller{
     }
 
     public function password_define(){
-        $content = array(
-            "styles" => array('form.css'),
-            "scripts" => array('form.js', 'util.js', 'passwordDefine.js')
-        );
-        $this->template->show('password_define.php', $content);
+        if($this->session->userdata('status') == true){
+            if($this->session->userdata('has_password') == false){
+
+                $content = array(
+                    "styles" => array('form.css'),
+                    "scripts" => array('form.js', 'util.js', 'passwordDefine.js'),
+                );
+
+                $this->template->show('password_define.php', $content);
+
+            }else{
+                redirect('user/profile');
+            }
+        }else{
+            redirect('user/index');
+        }
+    }
+
+    public function redefine_password(){
+        if($this->session->userdata('status') == true){
+            $this->session_destroy();
+        }
+
+        $selector = $this->input->get("selector");
+        $validator = $this->input->get("validator");
+        
+        if(!empty($selector) && !empty($validator)){
+            if(ctype_xdigit($selector) !== false && ctype_xdigit($validator) !== false){
+                $content = array(
+                    "styles" => array('form.css'),
+                    "scripts" => array('form.js', 'util.js', 'passwordRedefine.js'),
+                );
+                $this->template->show('password_redefine.php', $content);
+            }
+        }else{
+            $this->load->view('index.html');
+        }
     }
 /*
 |--------------------------------------------------------------------------
@@ -184,7 +216,7 @@ class User extends CI_Controller{
         }
         $response = array(
             "status" => 0,
-            "teste" => array('1', '2'),
+            "generic_error" => false,
         );
 
         $client = $this->googleClientInstance();
@@ -388,7 +420,7 @@ class User extends CI_Controller{
 
     }
 
-    public function destroySession(){
+    public function session_destroy(){
 
         $this->session->unset_userdata('user_data');
         $this->session->unset_userdata('user_privilege');
@@ -467,7 +499,8 @@ class User extends CI_Controller{
         $response = array(
             "status" => 0,
             "empty" => 0,
-            "error_list" => array()
+            "error_list" => array(),
+            "generic_error" => false
         );
         
         $email = $this->input->post("Email");
@@ -498,24 +531,139 @@ class User extends CI_Controller{
             $userExist = $this->users->userExists($email);
 
             if($userExist){
-                $response = $this->sendEmail($email);
+
+                $userData = $this->users->selectUserData($email);
+                
+                $nome = $userData["nome"];
+                $selector = bin2hex(random_bytes(8));
+                $token = random_bytes(32);
+                $tokenHash = password_hash($token, PASSWORD_DEFAULT);
+                $url = base_url() . 'user/redefine_password?selector=' . $selector . '&validator=' .bin2hex($token);
+                $expires = date("U") + 1800;
+                
+                //Deletar tokens ativos
+                $userId = $this->users->getUserId($email);
+                $this->users->deletePasswordToken($userId);
+                
+                $insertData = array(
+                    "id" => $userId,
+                    "selector" => $selector,
+                    "token" => $tokenHash,
+                    "expires" => $expires
+                );
+                $result = $this->users->insertResetPassword($insertData);
+                if(!$result){
+                    $response['status'] = 1;
+                    $response['generic_error'] = true;
+                }else{
+                    $return = $this->sendResetPasswordEmail($email, $nome, $selector, $token, $url, $expires);
+                    if($return){
+                        $response['status'] = 1;
+                        $response['generic_error'] = true;
+                    }
+                }
             }
         }
         echo json_encode($response);
     }
 
-    public function sendEmail(){
-        $htmlContent = '<h1>Sending email via SMTP server</h1>';
-        $htmlContent .= '<p>This email has sent via SMTP server from CodeIgniter application.</p>';
-        $this->email->from('idea.unicamp.teste@gmail.com', 'idea');
-        $this->email->to('lgpc1871@gmail.com');
+    private function sendResetPasswordEmail($email, $nome, $selector, $token, $url, $expires){
 
-        $this->email->subject('Email Test');
-        $this->email->message($htmlContent);
+        $htmlContent = '<h1>Redefinir Senha</h1>';
+        $htmlContent .= '<p>Olá '. $nome .'</p>';
+        $htmlContent .= '<p>Para redefinir sua senha <a href="' . $url . '">clique aqui</a></p>';
 
-        $this->email->send();
-        $retorno = $this->email->print_debugger();
+        $this->email->from($this->config->item('smtp_user'), 'idea');
+        $this->email->to($email);
 
-        return $retorno;
+        $this->email->subject('Redefinir Senha');
+        $this->email->message($htmlContent);    
+
+        $result = $this->email->send();
+
+        if($result){
+            return false;
+        }else{
+            $retorno = $this->email->print_debugger();
+            return $retorno;
+        }
+    }
+
+    public function passwordRedefinirAjax(){
+        if (!$this->input->is_ajax_request()) {
+			exit("Nenhum acesso de script direto permitido!");
+        }
+
+        $response = array(
+            "status" => 0,
+            "empty" => 0,
+            "error_list" => array(),
+            "generic_error" => false,
+            "invalid_token" => false
+        );
+
+        $selector = $this->input->post("selector");
+        $validator = $this->input->post("validator");
+
+        $currentDate = date("U");
+
+        $resetData = $this->users->selectResetPassword($selector, $currentDate);
+
+        if(!$resetData){
+            $response['status'] = 1;
+            $response['invalid_token'] = true;
+        }else{
+            $tokenBin = hex2bin($validator);
+            $tokenCheck = password_verify($tokenBin, $resetData["token"]);
+
+            if($tokenCheck == true){
+                $userId = $resetData["pessoa_id"];
+            }else{
+                $response['status'] = 1;
+                $response['invalid_token'] = true;
+            }
+        }
+
+        if($response['status'] == 0 && $response['invalid_token'] == false){
+
+            $senha = $this->input->post("senha");
+            $senhaConfirma = $this->input->post("confirma");
+            
+            $inputArray = array(
+                "#password" => $senha,
+                "#passwordConfirm" => $senhaConfirma,
+            );
+            
+            foreach($inputArray as $key => $value){
+                if(empty($value) || $value == " " || ctype_space($value)){
+                    $response['empty'] = 1;
+                    $response['status'] = 1;
+                    array_push($response["error_list"], $key);
+                }
+            }
+    
+            if($response['status'] == 0){
+                if($senha == $senhaConfirma){
+                    $passwordHash = password_hash($senha, PASSWORD_DEFAULT);
+
+                    $result = $this->users->updateUserPassword($userId, $passwordHash);
+
+                    if($result){
+                        $this->users->deletePasswordToken($userId);
+                    }else{
+                        $response['status'] = 1;
+                        $response["generic_error"] = true;
+                    }
+                }else{
+                    $response['status'] = 1;
+                    array_push($response["error_list"], "#password");
+                    array_push($response["error_list"], "#passwordConfirm");
+                }
+            }
+            
+        }
+
+        echo json_encode($response);
+        
     }
 }

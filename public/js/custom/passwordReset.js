@@ -18,20 +18,23 @@ $(function (){
                 if(response["status"] == 0){
 
                     loadingRequest(1);
-                    //window.location = `${BASE_URL}user`
+                    $(".help-block").html(FA_INFORMACAO + "Email Enviado");
+                    formStatus(0);
 
                 }else{
-
+                    if(response["generic_error"] == true){
+                        genericError(1);
+                    }else{
+                        verifyFormInputs(response);
+                    }
                     formStatus(1);
-                    verifyFormInputs(response);
-
                 }
             },
             error: function(response){
 
                 genericError(1);
                 formStatus(1);
-                console.log("triste...");
+                console.log(response);
 
             } 
         })

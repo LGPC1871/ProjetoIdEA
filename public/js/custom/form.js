@@ -6,7 +6,7 @@
 */
 const TEXTO_BOTAO_GOOGLE =              "Entrar com Google";
 const MENSAGEM_ERRO_GENERICO =          "Ocorreu um erro";
-const MENSAGEM_ERRO =                   "inválido";
+const MENSAGEM_ERRO =                   "Inválido";
 const MENSAGEM_PADRAO_VAZIO =           "Preencha os campos";
 const MENSAGEM_VERIFICANDO =            "Verificando...";
 const MENSAGEM_SUCESSO =                "Sucesso...";

@@ -13,14 +13,22 @@ class Users extends CI_Model{
             $this->pessoa_senha = 'AA_senha';
             $this->pessoa_created = 'AA_created';
             $this->pessoa_updated = 'AA_updated';
+
         $this->pessoaTerceiro = 'AB_pessoaTerceiro';
             $this->pessoaTerceiro_pessoaTerceiroId = 'AB_pessoaTerceiroId';
+
         $this->terceiro = 'AC_terceiro';
             $this->terceiro_id = 'AC_id';
             $this->terceiro_nome = 'AC_nome';
+
         $this->privilegios = 'AD_privilegios';
             $this->privilegios_id = 'AD_id';
             $this->privilegios_nome = 'AD_nome';
+        
+        $this->senhareset = 'AE_senhaReset';
+            $this->senhareset_selector = 'AE_selector';
+            $this->senhareset_token = 'AE_token';
+            $this->senhareset_expires = 'AE_expires';
     }
 /*
 |--------------------------------------------------------------------------
@@ -128,6 +136,28 @@ class Users extends CI_Model{
             return null;
         }
     }
+
+    function selectResetPassword($selector, $currentDate){
+        $this->db->select('*');
+        $this->db->from($this->senhareset);
+        $this->db->where($this->senhareset_selector, $selector);
+        //$this->db->where($this->senhareset_expires . '>=', $currentDate);
+
+        $result = $this->db->get();
+
+        if($result->num_rows() == 1){
+            $data = $result->row_array();
+            $retorno = array(
+                "pessoa_id" => $data[$this->pessoa_id],
+                "selector" => $data[$this->senhareset_selector],
+                "token" => $data[$this->senhareset_token],
+                "expires" => $data[$this->senhareset_expires],
+            );
+            return $retorno;
+        }else{
+            return false;
+        }
+    }
 /*
 |--------------------------------------------------------------------------
 | UPDATE
@@ -171,6 +201,25 @@ class Users extends CI_Model{
             );
 
             $this->db->update($this->pessoa, $userData, array($this->pessoa_id => $userid));
+    }
+
+    function updateUserPassword($userId, $passwordHash){
+        $time = date("Y-m-d H:i:s");
+        
+        $updateData = array(
+            $this->pessoa_senha => $passwordHash,
+            $this->pessoa_updated => $time,
+        );
+
+        $this->db->where($this->pessoa_id, $userId);
+        $this->db->update($this->pessoa, $updateData);
+        $result = $this->db->affected_rows();
+        
+        if($result > 0){
+            return true;
+        }else{
+            return false;
+        }
     }
 /*
 |--------------------------------------------------------------------------
@@ -264,4 +313,31 @@ class Users extends CI_Model{
             
         }
     }
+
+    function insertResetPassword($inputArray){
+        $data = array(
+            $this->pessoa_id => $inputArray['id'],
+            $this->senhareset_selector => $inputArray['selector'],
+            $this->senhareset_token => $inputArray['token'],
+            $this->senhareset_expires => $inputArray['expires'],
+        );
+        
+        $this->db->insert($this->senhareset, $data);
+        $result = $this->db->affected_rows();
+        if($result){
+            return true;
+        }else{
+            return false;
+        }
+    }
+/*
+|--------------------------------------------------------------------------
+| DELETE
+|--------------------------------------------------------------------------
+| Todas as funções DELETE
+*/
+        function deletePasswordToken($userId){
+            $this->db->where($this->pessoa_id, $userId);
+            $this->db->delete($this->senhareset);
+        }
 }

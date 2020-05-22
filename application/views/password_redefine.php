@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 $diretorio = base_url();
+
+$selector = $this->input->get("selector");
+$validator = $this->input->get("validator");
 ?>
 <main>
     <div class="container">
@@ -8,16 +11,17 @@ $diretorio = base_url();
             <div class="col-xl-4 col-lg-5 col-md-6 col-sm-8 col-10" id="div-form">
                 <form action="" method="post" id="form">
                     <div class="form-group text-center">
-                        <h3>DEFINIR SENHA</h3>
+                        <h3>REDEFINIR SENHA</h3>
                         <hr />
                     <div class="form-group text-center">
                         <div class="helper no-error">
                             <span class="help-block"></span>
                         </div>
                     </div>
-                        <small id="passwordFor" class="form-text text-muted">é necessário definir uma senha antes de prosseguir</small>
-                        Defina sua senha:
+                        Digite sua nova senha:
                     </div>
+                    <input type="hidden" name="selector" value="<?=$selector?>">
+                    <input type="hidden" name="validator" value="<?=$validator?>">
                     <div class="form-group">
                         <label for="senha">Senha</label>
                         <input type="password" class="form-control" name="senha" id="password" placeholder="Digite sua senha">
@@ -28,9 +32,8 @@ $diretorio = base_url();
                     </div>
                     <div class="form-group text-center">
                         <button type="submit" class="btn btn-primary" name="submit" id="btnSubmit">
-                            Definir Senha
+                            Redefinir
                         </button>
-                        <small id="passwordInfo" class="form-text text-muted"><a href="<?=$diretorio?>user/destroySession">VOLTAR</a></small>
                     </div>
                 </form>
             </div>

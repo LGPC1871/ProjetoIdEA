@@ -11,7 +11,7 @@ $diretorio = base_url();
             </div>
         </div>
         <div class="row justify-content-center">
-            <a href="<?=$diretorio?>user/destroySession" class="btn btn-danger">Sair</a>
+            <a href="<?=$diretorio?>user/session_destroy" class="btn btn-danger">Sair</a>
         </div>
     </div>
 </main>
