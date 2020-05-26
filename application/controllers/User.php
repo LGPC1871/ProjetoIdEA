@@ -178,7 +178,7 @@ class User extends CI_Controller{
         if($response['status'] == 0){
             if(password_verify($password, $userData["senha"])){
                 $password = "";
-                unset($userData["senha"]);
+                
                 $this->session_data["user_data"] = $userData;
             }else{
                 $response['status'] = 1;
@@ -243,6 +243,7 @@ class User extends CI_Controller{
             }
 
             $userData = $this->users->selectUserData($googleUserData["userData"]["email"]);
+            
             $this->session_data["user_data"] = $userData;
 
             $userPrivilege = $this->users->verifyUserPrivilege($userData["idprivilegio"]);
@@ -274,7 +275,6 @@ class User extends CI_Controller{
                             "nome" => $payload['given_name'],
                             "sobrenome" => $payload['family_name'],
                         )
-                   
                     );
                     return $response;
                 }else{
@@ -412,7 +412,7 @@ class User extends CI_Controller{
 */
 
     private function startSession($sessionData){
-
+        unset($sessionData["user_data"]["senha"]);
         $sessionData['has_password'] = $this->users->userHasPassword($sessionData['user_data']['id']);
 
         $this->session->set_userdata($sessionData);

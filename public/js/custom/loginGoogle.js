@@ -30,12 +30,10 @@ function sendUserTokenToBackend(userData){
         success: function(response){
             console.log(response);
             if(response["status"] == 0){
-
                 loadingRequest(1);
                 window.location = BASE_URL + "user/index";
 
             }else{
-
                 genericError();
                 formStatus(1)
                 $("#botaoLogin").prop('disabled', false);
@@ -43,8 +41,7 @@ function sendUserTokenToBackend(userData){
             }
 
         },
-        error: function(){
-
+        error: function(response){
             genericError(1);
             formStatus(1);
             $("#botaoLogin").prop('disabled', false);

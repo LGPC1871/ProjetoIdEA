@@ -30,7 +30,7 @@ $diretorio = base_url();
                         <button type="submit" class="btn btn-primary" name="submit" id="btnSubmit">
                             Definir Senha
                         </button>
-                        <small id="passwordInfo" class="form-text text-muted"><a href="<?=$diretorio?>user/destroySession">VOLTAR</a></small>
+                        <small id="passwordInfo" class="form-text text-muted"><a href="<?=$diretorio?>user/session_destroy">VOLTAR</a></small>
                     </div>
                 </form>
             </div>
