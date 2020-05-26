@@ -23,9 +23,6 @@ $diretorio = base_url();
                         <li class="nav-item">
                             <a class="nav-link" href="<?=$diretorio?>user">Conta</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?=$diretorio?>user/register">Cadastrar</a>
-                        </li>
                     </ul>
                 </div>
             </div>

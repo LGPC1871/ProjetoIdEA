@@ -1,3 +1,10 @@
+/*
+|--------------------------------------------------------------------------
+| Constantes
+|--------------------------------------------------------------------------
+| Todas as constantes google
+*/
+
 $(document).ready(function(){
     setTimeout(() => {
         changeBtnLanguage();
@@ -15,7 +22,7 @@ function onSignIn(googleUser) {
 function sendUserTokenToBackend(userData){
     $.ajax({
         type: "POST",
-        url: `${BASE_URL}user/googleAjaxLogin`,
+        url: `${BASE_URL}user/ajax_googleSignIn`,
         dataType: "json",
         data: userData,
 
@@ -29,7 +36,7 @@ function sendUserTokenToBackend(userData){
         },
         success: function(response){
             console.log(response);
-            if(response["status"] == 0){
+            /*if(response["status"] == 0){
                 loadingRequest(1);
                 window.location = BASE_URL + "user/index";
 
@@ -38,10 +45,11 @@ function sendUserTokenToBackend(userData){
                 formStatus(1)
                 $("#botaoLogin").prop('disabled', false);
 
-            }
+            }*/
 
         },
         error: function(response){
+            console.log(response);
             genericError(1);
             formStatus(1);
             $("#botaoLogin").prop('disabled', false);
