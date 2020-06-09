@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS `mydb`.`AC_terceiro` (
+  `AC_id` INT NOT NULL AUTO_INCREMENT,
+  `AC_nome` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`AC_id`))
+ENGINE = InnoDB

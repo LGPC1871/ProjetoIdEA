@@ -10,6 +10,7 @@ main{
     margin-bottom: 5vh;
     min-height: calc(100vh - 28vh);
 }
+
 footer{
     min-height: 8vh;
     position: absolute;
