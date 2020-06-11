@@ -1,63 +1,40 @@
-/*
-|--------------------------------------------------------------------------
-| Constantes
-|--------------------------------------------------------------------------
-| Todas as constantes google
-*/
-
-$(document).ready(function(){
-    setTimeout(() => {
-        changeBtnLanguage();
-    }, 50);    
-});
-
 function onSignIn(googleUser) {
-    var userToken = googleUser.getAuthResponse().id_token;
-    var userData = {
-        userToken: userToken
+    var id_token = googleUser.getAuthResponse().id_token;
+    
+    /*
+    var profile = googleUser.getBasicProfile();
+        console.log("ID: " + profile.getId());
+        console.log('Full Name: ' + profile.getName());
+        console.log('Given Name: ' + profile.getGivenName());
+        console.log('Family Name: ' + profile.getFamilyName());
+        console.log("Image URL: " + profile.getImageUrl());
+        console.log("Email: " + profile.getEmail());
+    */
+
+    var jsonInput = {
+        token: id_token
     }
-    sendUserTokenToBackend(userData);
-}
 
-function sendUserTokenToBackend(userData){
-    $.ajax({
-        type: "POST",
-        url: `${BASE_URL}user/ajax_googleSignIn`,
-        dataType: "json",
-        data: userData,
+    let sendToBackEnd= function(jsonInput){
+        $.ajax({
+            type: "POST",
+            url: `${BASE_URL}user/ajaxLoginGoogle`,
+            dataType: "json",
+            data: jsonInput,
 
-        beforeSend: function(){
+            beforeSend: function(){
+                console.log("enviando...");
+            },
+            success: function(response){
+                console.log(response);
+            },
+            error: function(response){
+                console.log(response);
+            }
+        })
+    };
 
-            formStatus(0);
-            showHelperErrors(false);
-            loadingRequest(0);
-            $("#botaoLogin").prop('disabled', true);
+    sendToBackEnd(jsonInput);
 
-        },
-        success: function(response){
-            console.log(response);
-            /*if(response["status"] == 0){
-                loadingRequest(1);
-                window.location = BASE_URL + "user/index";
-
-            }else{
-                genericError();
-                formStatus(1)
-                $("#botaoLogin").prop('disabled', false);
-
-            }*/
-
-        },
-        error: function(response){
-            console.log(response);
-            genericError(1);
-            formStatus(1);
-            $("#botaoLogin").prop('disabled', false);
-            
-        }
-    })
-}
-
-function changeBtnLanguage(){
-    $(".abcRioButtonContents").first().html(TEXTO_BOTAO_GOOGLE);
+    sendToBackEnd = undefined;
 }
