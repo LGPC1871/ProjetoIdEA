@@ -10,6 +10,7 @@ class User extends CI_Controller{
         require_once(APPPATH . 'libraries/PessoaModel.php');
         require_once(APPPATH . 'libraries/PessoaTerceiroModel.php');
         $this->load->model('UserDAO', 'userDAO');
+        $this->load->library('session');
         $this->config->load('google');
 
     }
@@ -18,7 +19,7 @@ class User extends CI_Controller{
 
         if($this->session->userdata("logged") == true){
 
-            redirect('profile');
+            redirect('user/profile');
             
         }else{
 
@@ -106,31 +107,37 @@ class User extends CI_Controller{
                 return "authentication";
             }
 
-            $userData = $this->googleUserModel($payload);
+            $googleUserData = $this->googleUserModel($payload);
             $userThirdData = $this->googleUserThirdModel($payload['sub']);
 
-            if(!$userData){
+            if(!$googleUserData){
                 return "info_lack";
             }
-            $userExist = $this->userDAO->userExist($userData->getEmail());
+            $userExist = $this->userDAO->userExist($googleUserData->getEmail());
             
             if($userExist){
                 //update
-                $updateUser = $this->userDAO->updateUser($userData, $userThirdData);
+                $updateUser = $this->userDAO->updateUser($googleUserData, $userThirdData);
 
                 if(!$updateUser) return "update";
             }else{
                 //register
-                $addUser = $this->userDAO->insertNewUser($userData, $userThirdData);
+                $addUser = $this->userDAO->insertNewUser($googleUserData, $userThirdData);
 
                 if(!$addUser) return "register";
             }
+            //start session
+            $userData = $this->userDAO->selectUserData($googleUserData->getEmail());
 
+            if(!$userData){
+                return false;
+            }
 
-            //start session here
+            $additionalInfo = array(
+                "picture" => $payload["picture"]
+            );
 
-
-            return true;
+            return $this->startSession($userData, $additionalInfo);
         }
         
         private function googleAuth($token){
@@ -175,13 +182,22 @@ class User extends CI_Controller{
 
     /*
     |--------------------------------------------------------------------------
-    | Login
+    | Sessão
     |--------------------------------------------------------------------------
-    | Todas as funções relacionadas ao Google
+    | Todas as funções relacionadas a sessão do usuário
     */
         
-        private function startSession($userModel, $additionalInfo = array()){       
+        private function startSession($userModel, $additionalInfo = array()){  
+            
+            $this->session->set_userdata("logged", true);
+            $this->session->set_userdata("userData", serialize($userModel));
+            $this->session->set_userdata("addInfo", $additionalInfo);
             return true;
+        }
+
+        public function endSession(){
+            $this->session->sess_destroy();
+            redirect('user');
         }
 
     /*

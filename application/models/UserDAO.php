@@ -156,4 +156,27 @@ class UserDAO extends CI_Model{
         
         return $result->num_rows() > 0 ? $result->row('id') : false;
     }
+
+    public function selectUserData($email){
+        $userData = new PessoaModel();
+        $this->db
+            ->select('*')
+            ->from('pessoa')
+            ->where('email', $email);
+        $result = $this->db->get();
+
+        if($result->num_rows() == 1){
+            
+            $userData->setId($result->row('id'));
+            $userData->setEmail($result->row('email'));
+            $userData->setNomeCompleto($result->row('nome_completo'));
+            $userData->setNome($result->row('nome'));
+            $userData->setSobrenome($result->row('sobrenome'));
+            $userData->setIdPrivilegio($result->row('privilegio_id'));
+
+            return $userData;
+        }
+
+        return false;
+    }
 }

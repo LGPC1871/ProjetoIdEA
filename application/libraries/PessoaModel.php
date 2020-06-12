@@ -91,4 +91,10 @@ class PessoaModel{
         {
             return $this->idPrivilegio;
         }
+        public function setIdPrivilegio($idPrivilegio)
+        {
+            $this->idPrivilegio = $idPrivilegio;
+
+            return $this;
+        }
 }
