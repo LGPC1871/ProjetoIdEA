@@ -10,7 +10,6 @@ function onSignIn(googleUser) {
         console.log("Image URL: " + profile.getImageUrl());
         console.log("Email: " + profile.getEmail());
     */
-
     var jsonInput = {
         token: id_token
     }
@@ -27,6 +26,7 @@ function onSignIn(googleUser) {
             },
             success: function(response){
                 console.log(response);
+                window.location = `${BASE_URL}user/profile`;
             },
             error: function(response){
                 console.log(response);

@@ -1,0 +1,32 @@
+header{
+    width: 100%;
+}
+#header{
+    min-height: 10vh;
+}
+#logo > div > img{
+    min-height: 75px;
+    max-height: 10vh;
+}
+#profile-header{
+    min-width: 25vw;
+    text-transform: uppercase;
+}
+#profile-header > a{
+    color: #343a40;
+    font-weight: bold;
+    padding: 0.5rem;
+}
+#profile-header > a > img{
+    height: 2rem;
+}
+#profile-header > a:hover{
+    text-decoration: none;
+    background-color: #E9E9E9;
+}
+#profile-header > a:active{
+    color: grey;
+}
+nav{
+    box-shadow: 0px 10px 5px 2px rgba(0,0,0,0.75);
+}

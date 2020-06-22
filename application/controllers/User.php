@@ -39,9 +39,8 @@ class User extends CI_Controller{
             if(!$this->session->userdata("logged")){
 
                 $content = array(
-                    "styles" => array('login.css', 'form.css'),
-                    "headScripts" => array('https://apis.google.com/js/platform.js', 'https://apis.google.com/js/platform.js?onload=renderButton'),
-                        "scripts" => array('loginGoogle.js', 'util.js', 'form.js'),
+                    "head_scripts" => array('https://apis.google.com/js/platform.js', 'https://apis.google.com/js/platform.js?onload=renderButton'),
+                    "scripts" => array('loginGoogle.js', 'util.js'),
                     );
                 $this->template->show('login.php', $content);
 
@@ -54,13 +53,15 @@ class User extends CI_Controller{
         public function profile(){
 
             if($this->session->userdata("logged")){
+                //Carregar conteúdo
 
-                $this->template->show('profile.php');
+
+                $content = array(
+                );
+                $this->template->show("profile.php", $content);
 
             }else{
-
                 redirect('user');
-
             }
         }
 
@@ -187,11 +188,11 @@ class User extends CI_Controller{
     | Todas as funções relacionadas a sessão do usuário
     */
         
-        private function startSession($userModel, $additionalInfo = array()){  
+        private function startSession($userData, $additionalInfo = array()){  
             
             $this->session->set_userdata("logged", true);
-            $this->session->set_userdata("userData", serialize($userModel));
-            $this->session->set_userdata("addInfo", $additionalInfo);
+            $this->session->set_userdata("userData", serialize($userData));
+            $this->session->set_userdata("thirdInfo", $additionalInfo);
             return true;
         }
 
