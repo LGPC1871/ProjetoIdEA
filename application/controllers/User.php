@@ -7,8 +7,8 @@ class User extends CI_Controller{
         parent::__construct();
 
         //REQUIRES\\
-        require_once(APPPATH . 'libraries/PessoaModel.php');
-        require_once(APPPATH . 'libraries/PessoaTerceiroModel.php');
+        require_once(APPPATH . 'libraries/model/PessoaModel.php');
+        require_once(APPPATH . 'libraries/model/PessoaTerceiroModel.php');
         $this->load->model('UserDAO', 'userDAO');
         $this->load->library('session');
         $this->config->load('google');
