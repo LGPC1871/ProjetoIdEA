@@ -10,7 +10,6 @@ class User extends CI_Controller{
         require_once(APPPATH . 'libraries/model/PessoaModel.php');
         require_once(APPPATH . 'libraries/model/PessoaTerceiroModel.php');
         $this->load->model('UserDAO', 'userDAO');
-        $this->load->library('session');
         $this->config->load('google');
 
     }
@@ -53,13 +52,7 @@ class User extends CI_Controller{
         public function profile(){
 
             if($this->session->userdata("logged")){
-                //Carregar conteúdo
-
-
-                $content = array(
-                );
-                $this->template->show("profile.php", $content);
-
+                redirect('profile');
             }else{
                 redirect('user');
             }
@@ -128,7 +121,7 @@ class User extends CI_Controller{
                 if(!$addUser) return "register";
             }
             //start session
-            $userData = $this->userDAO->selectUserData($googleUserData->getEmail());
+            $userData = $this->userDAO->selectUserData("email", $googleUserData->getEmail());
 
             if(!$userData){
                 return false;
@@ -191,8 +184,12 @@ class User extends CI_Controller{
         private function startSession($userData, $additionalInfo = array()){  
             
             $this->session->set_userdata("logged", true);
-            $this->session->set_userdata("userData", serialize($userData));
+            $this->session->set_userdata("userId", $userData->getId());
+            $this->session->set_userdata("email", $userData->getEmail());
+            $this->session->set_userdata("nome", $userData->getNome());
+            $this->session->set_userdata("sobrenome", $userData->getSobrenome());
             $this->session->set_userdata("thirdInfo", $additionalInfo);
+            
             return true;
         }
 

@@ -18,12 +18,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <?php if($this->session->userdata("logged") == true): ?>
                         <!--USUARIO LOGADO-->
                         <a href="<?=$diretorio?>user/profile">
-                            <?php if($session_data["thirdInfo"]["picture"]):?>
-                                <img class="rounded-circle" src="<?=$session_data["thirdInfo"]["picture"]?>" alt="img-perfil">
+                            <?php if($thirdInfo["picture"]):?>
+                                <img class="rounded-circle" src="<?=$thirdInfo["picture"]?>" alt="img-perfil">
                             <?php else :?>
                                 <i class="far fa-user-circle fa-lg"></i> 
                             <?php endif ?>
-                            <?=$userData->getNome()?>
+                            <?=$nome?>
                         </a>
                     <?php else:?>
                         <a href="<?=$diretorio?>user"><i class="far fa-user-circle fa-lg"></i>&nbsp ENTRAR</a>

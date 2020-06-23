@@ -157,12 +157,12 @@ class UserDAO extends CI_Model{
         return $result->num_rows() > 0 ? $result->row('id') : false;
     }
 
-    public function selectUserData($email){
+    public function selectUserData($where, $value){
         $userData = new PessoaModel();
         $this->db
             ->select('*')
             ->from('pessoa')
-            ->where('email', $email);
+            ->where($where, $value);
         $result = $this->db->get();
 
         if($result->num_rows() == 1){
@@ -177,6 +177,23 @@ class UserDAO extends CI_Model{
             return $userData;
         }
 
+        return false;
+    }
+
+    public function selectUserPrivilege($id){
+        $privilegio = new PrivilegioModel();
+        $this->db
+            ->select('*')
+            ->from('privilegio')
+            ->where('id', $id);
+        $result = $this->db->get();
+
+        if($result->num_rows() == 1){
+            $privilegio->setId($result->row('id'));
+            $privilegio->setNome($result->row('nome'));
+
+            return $privilegio;
+        }
         return false;
     }
 }
