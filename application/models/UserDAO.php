@@ -180,12 +180,12 @@ class UserDAO extends CI_Model{
         return false;
     }
 
-    public function selectUserPrivilege($id){
+    public function selectPrivilege($where, $value){
         $privilegio = new PrivilegioModel();
         $this->db
             ->select('*')
             ->from('privilegio')
-            ->where('id', $id);
+            ->where($where, $value);
         $result = $this->db->get();
 
         if($result->num_rows() == 1){

@@ -14,7 +14,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <img src="<?=$diretorio?>public/images/logo_idea.png" alt="logo unicamp">
                     </div>
                 </div>
-                <div id="profile-header" class="p-2 d-flex justify-content-center align-self-center ml-sm-auto">
+                <div id="profile-header" class="p-2 d-flex justify-content-center align-self-center align-items-center ml-sm-auto">
                     <?php if($this->session->userdata("logged") == true): ?>
                         <!--USUARIO LOGADO-->
                         <a href="<?=$diretorio?>user/profile">

@@ -17,7 +17,7 @@ function onSignIn(googleUser) {
     let sendToBackEnd= function(jsonInput){
         $.ajax({
             type: "POST",
-            url: `${BASE_URL}user/ajaxLoginGoogle`,
+            url: `ajaxLoginGoogle`,
             dataType: "json",
             data: jsonInput,
 
@@ -26,7 +26,7 @@ function onSignIn(googleUser) {
             },
             success: function(response){
                 console.log(response);
-                window.location = `${BASE_URL}user/profile`;
+                window.location = `profile`;
             },
             error: function(response){
                 console.log(response);
