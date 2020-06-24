@@ -9,10 +9,35 @@ class PessoaModel{
     private $sobrenome;
     private $created;
     private $updated;
-    private $idPrivilegio;
 
     public function __construct(){
     }
+    /*
+    |--------------------------------------------------------------------------
+    | PRIVATE STATIC
+    |--------------------------------------------------------------------------
+    | Todas as funções da classe
+    */
+
+        /**
+         * Método required, retorna quais atributos do objeto inserido
+         * NÃO são nulos
+         * @param object $pessoaModel
+         * @return array
+         */
+            private static function _verifyObjectAttr($pessoaModel){
+                $response = array();
+
+                if($pessoaModel->getId()) $response[] = 'id';
+                if($pessoaModel->getEmail()) $response[] = 'email';
+                if($pessoaModel->getNomeCompleto()) $response[] = 'nomeCompleto';
+                if($pessoaModel->getNome()) $response[] = 'nome';
+                if($pessoaModel->getSobrenome()) $response[] = 'sobrenome';
+                if($pessoaModel->getCreated()) $response[] = 'created';
+                if($pessoaModel->getUpdated()) $response[] = 'updated';
+                
+                return $response;
+            }
     /*
     |--------------------------------------------------------------------------
     | Getter`s & Setter`s
@@ -84,16 +109,6 @@ class PessoaModel{
         public function setUpdated($updated)
         {
             $this->updated = $updated;
-
-            return $this;
-        }
-        public function getIdPrivilegio()
-        {
-            return $this->idPrivilegio;
-        }
-        public function setIdPrivilegio($idPrivilegio)
-        {
-            $this->idPrivilegio = $idPrivilegio;
 
             return $this;
         }

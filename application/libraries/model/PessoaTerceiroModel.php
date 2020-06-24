@@ -7,7 +7,15 @@ class PessoaTerceiroModel{
 
     public function __construct(){
     }
+    private static function _verifyObjectAttr($pessoaTerceiroModel){
+        $response = array();
 
+        if($pessoaTerceiroModel->getTerceiroId()) $response[] = 'terceiro_id';
+        if($pessoaTerceiroModel->getPessoaId()) $response[] = 'pessoa_id';
+        if($pessoaTerceiroModel->getPessoaTerceiroId()) $response[] = 'id_pessoa_terceiro';
+        
+        return $response;
+    }
     /*
     |--------------------------------------------------------------------------
     | Getter`s & Setter`s
