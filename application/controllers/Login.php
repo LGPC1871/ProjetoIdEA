@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class User extends CI_Controller{
+class Login extends CI_Controller{
     
     public function __construct(){
         parent::__construct();
@@ -25,37 +25,22 @@ class User extends CI_Controller{
     }
     
     public function index(){
-        if($this->session->userdata("logged") == true){
-            redirect('user/profile');
+        if(!$this->session->userdata("logged")){
+            $content = array(
+                "head_scripts" => array(
+                    'https://apis.google.com/js/platform.js', 
+                    'https://apis.google.com/js/platform.js?onload=renderButton'
+                ),
+                "scripts" => array(
+                    'user.js', 
+                    'util.js'
+                ),
+            );
+            $this->template->show('login.php', $content);
         }else{
-            redirect('user/login');
+            redirect('profile');
         }
     }
-    /*
-    |--------------------------------------------------------------------------
-    | View
-    |--------------------------------------------------------------------------
-    | Todas as funções que chamam view
-    */
-        public function login(){
-            if(!$this->session->userdata("logged")){
-                $content = array(
-                    "head_scripts" => array('https://apis.google.com/js/platform.js', 'https://apis.google.com/js/platform.js?onload=renderButton'),
-                    "scripts" => array('loginGoogle.js', 'util.js'),
-                    );
-                $this->template->show('login.php', $content);
-            }else{
-                redirect('user');
-            }
-        }
-        public function profile(){
-            if($this->session->userdata("logged")){
-                redirect('profile');
-            }else{
-                redirect('user');
-            }
-        }
-
     /*
     |--------------------------------------------------------------------------
     | Ajax
