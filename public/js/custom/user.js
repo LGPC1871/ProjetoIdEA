@@ -31,7 +31,7 @@ function googleSignIn(googleUser) {
             },
             success: function(response){
                 console.log(response);
-                //window.location = `profile`;
+                window.location = `profile`;
             },
             error: function(response){
                 console.log(response);

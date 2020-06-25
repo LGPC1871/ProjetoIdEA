@@ -14,10 +14,9 @@ class Profile extends CI_Controller{
         }else{
             redirect('user/login');
         }
-
     }
 
     private function loadProfile(){
-        $this->template->show("profile.php", $content);
+        $this->template->show("profile.php");
     }
 }

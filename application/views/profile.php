@@ -4,19 +4,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <main class="flex-fill d-flex justify-content-center">
     <div class="d-flex flex-column p-4">
         <div class="text-center text-uppercase mt-4 mb-4">
-            <h2>área do <?=$privilegio->getNome()?></h2>
+            <h2>PROFILE</h2>
         </div>
         <div class="d-flex flex-column">
             <div class="align-self-center">
-                <img id="picture" class="rounded-circle" src="<?=$thirdInfo["picture"]?>" alt="">
+                <img id="picture" class="rounded-circle" src="teste" alt="">
             </div>
             <div class="align-self-center text-center">
-                <?=$pessoa->getNome() . " " . $pessoa->getSobrenome()?>
+                TESTE
             </div>
             <div class="align-self-center text-center text-muted">
-                <small><?=$pessoa->getEmail()?></small>
+                <small>TESTE</small>
             </div>
-            <a href="<?=$diretorio?>user/endSession" class="align-self-center text-center btn btn-danger m-2">
+            <a href="<?=$diretorio?>login/endSession" class="align-self-center text-center btn btn-danger m-2">
                 SAIR
             </a>
         </div>

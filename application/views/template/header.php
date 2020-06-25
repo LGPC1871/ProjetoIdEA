@@ -1,5 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+
+if($this->session->userdata("logged")){
+    $cabecalho = array(
+        'nome' => $this->session->userdata("nome"),
+        'foto' => $this->session->userdata("thirdData")['picture']
+    );
+}
+
 ?>
 <body>
 <div id="body-flex" class="d-flex flex-column">
@@ -15,8 +23,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </div>
                 </div>
                 <div id="profile-header" class="p-2 d-flex justify-content-center align-self-center align-items-center ml-sm-auto">
-                    <?php if($this->session->userdata("logged")): ?>
+                    <?php if(isset($cabecalho)): ?>
                         <!--USUARIO LOGADO-->
+                        <a class="d-flex align-items-center"href="<?=$diretorio?>profile">
+                            <img class="rounded-circle" src="<?=$cabecalho['foto']?>" alt="">
+                            &nbsp
+                            <span><?=$cabecalho['nome']?></span>
+                        </a>
                     <?php else:?>
                         <a href="<?=$diretorio?>login"><i class="far fa-user-circle fa-lg"></i>&nbsp ENTRAR</a>
                     <?php endif ?>
