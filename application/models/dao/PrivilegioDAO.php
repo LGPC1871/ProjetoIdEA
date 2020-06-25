@@ -33,8 +33,8 @@ class PrivilegioDAO extends DAO{
                 if(!$result)return false;
 
                 $privilegio = new PrivilegioModel;
-                $privilegio->setId($result->id);
-                $privilegio->setNome($result->nome);
+                if(isset($result->id)) $privilegio->setId($result->id);
+                if(isset($result->nome)) $privilegio->setNome($result->nome);
 
                 return $privilegio;
             }

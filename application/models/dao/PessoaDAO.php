@@ -81,11 +81,11 @@ class PessoaDAO extends DAO{
             if(!$result)return false;
 
             $pessoa = new PessoaModel();
-            $pessoa->setId($result->id);
-            $pessoa->setEmail($result->email);
-            $pessoa->setNomeCompleto($result->nome_completo);
-            $pessoa->setNome($result->nome);
-            $pessoa->setSobrenome($result->sobrenome);
+            if(isset($result->id)) $pessoa->setId($result->id);
+            if(isset($result->email)) $pessoa->setEmail($result->email);
+            if(isset($result->nome_completo)) $pessoa->setNomeCompleto($result->nome_completo);
+            if(isset($result->nome)) $pessoa->setNome($result->nome);
+            if(isset($result->sobrenome)) $pessoa->setSobrenome($result->sobrenome);
             
             return $pessoa;
         }

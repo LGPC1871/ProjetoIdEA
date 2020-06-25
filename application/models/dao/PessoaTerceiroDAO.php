@@ -67,4 +67,61 @@ class PessoaTerceiroDAO extends DAO{
 
             return $result;
         }
+
+        /**
+         * Método get retorna um registro
+         * @param array $options
+         * @return PessoaTerceiroModel
+         */
+        public function getPessoaTerceiro($options = array()){
+            $required = array(
+                'where'
+            );
+            if(!$this->_required($required, $options, 1)) return false;
+            
+            $options['from'] = 'pessoa_terceiro';
+
+            $result = $this->readSingle($options);
+
+            if(!$result)return false;
+
+            $pessoaTerceiro = new PessoaTerceiroModel();
+            if(isset($result->terceiro_id)) $pessoaTerceiro->setTerceiroId($result->terceiro_id);
+            if(isset($result->pessoa_id)) $pessoaTerceiro->setPessoaId($result->pessoa_id);
+            if(isset($result->id_pessoa_terceiro)) $pessoaTerceiro->setPessoaTerceiroId($result->id_pessoa_terceiro);
+            return $pessoaTerceiro;
+        }
+
+        /**
+         * Método update atualiza registro em @pessoa_terceiro
+         * retorna false se a operacao falhar
+         * @param array $input
+         * @return bool
+         */
+        public function updatePessoaTerceiro($input = array()){
+            $required = array(
+                'pessoaTerceiroModel',
+            );
+            if(!$this->_required($required, $input, 1)) return false;
+
+            $pessoaTerceiro = $input['pessoaTerceiroModel'];
+
+            //preparar options para o insert
+            $atributos = array(
+                'id_pessoa_terceiro' => $pessoaTerceiro->getPessoaTerceiroId(),
+            );
+
+            $options = array(
+                'where' => array(
+                    'terceiro_id' => $pessoaTerceiro->getTerceiroId(),
+                    'pessoa_id' => $pessoaTerceiro->getPessoaId()
+                ),
+                'table' => 'pessoa_terceiro',
+                'values' => $atributos
+            );
+
+            $result = $this->update($options);
+
+            return $result;
+        }
 }

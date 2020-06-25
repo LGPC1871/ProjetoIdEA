@@ -114,9 +114,10 @@ class User extends CI_Controller{
 
             if(!$pessoaTerceiroModel) return "invalid_third";
             
-            $userExist = $this->pessoaDAO->getUser(array('where' => array('email'=>$pessoaModel->getEmail())));
+            $userExist = $this->pessoaDAO->getUser(array('select' => array('id'),'where' => array('email'=>$pessoaModel->getEmail())));
             if($userExist){
                 //update
+                $pessoaTerceiroModel->setPessoaId($userExist->getId());
                 $input = array(
                     'pessoaModel' => $pessoaModel,
                     'pessoaTerceiroModel' => $pessoaTerceiroModel
@@ -317,11 +318,32 @@ class User extends CI_Controller{
          * @return boolean
          */
         private function updateUser($input = array()){
+            //executar update em @pessoa
             $inputPessoaDAO = array(
                 'pessoaModel' => $input['pessoaModel']
             );
             if(!$this->pessoaDAO->updateUser($inputPessoaDAO)) return false;
-
+            
+            //verificar existencia em @terceiro
+            $pessoaTerceiro = $input['pessoaTerceiroModel'];
+            $inputPessoaTerceiroDAO = array(
+                'pessoaTerceiroModel' => $pessoaTerceiro
+            );
+            $options = array(
+                'where' => array(
+                    'pessoa_id' => $pessoaTerceiro->getPessoaId(),
+                    'terceiro_id' => $pessoaTerceiro->getTerceiroId(),
+                ),
+                'select' => array(
+                    'id_pessoa_terceiro'
+                )
+            );
+            $pessoaTerceiroExiste = $this->pessoaTerceiroDAO->getPessoaTerceiro($options);
+            if(!$pessoaTerceiroExiste){
+                if(!$this->pessoaTerceiroDAO->addPessoaTerceiro($inputPessoaTerceiroDAO)) return false;
+            }else{
+                if(!$this->pessoaTerceiroDAO->updatePessoaTerceiro($inputPessoaTerceiroDAO)) return false;
+            }
             return true;
         }
 }

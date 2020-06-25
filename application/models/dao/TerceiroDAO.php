@@ -29,8 +29,8 @@ class TerceiroDAO extends DAO{
             if(!$result) return false;
             
             $terceiro = new TerceiroModel();
-            $terceiro->setId($result->id);
-            $terceiro->setNome($result->nome);
+            if(isset($result->id)) $terceiro->setId($result->id);
+            if(isset($result->nome)) $terceiro->setNome($result->nome);
 
             return $terceiro;
         }
