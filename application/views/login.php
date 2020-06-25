@@ -14,7 +14,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     Escolha uma forma de autenticação:
                 </div>
                 <div class="form-group text-center justify-content-center">
-                    <div class="g-signin2 d-flex justify-content-center" data-onsuccess="onSignIn" data-longtitle="true" data-theme="dark" id="botaoLoginGoogle" ></div>
+                    <div class="g-signin2 d-flex justify-content-center" data-onsuccess="googleSignIn" data-longtitle="true" data-theme="dark" id="botaoLoginGoogle" ></div>
                 </div>
             </form>    
         </div>

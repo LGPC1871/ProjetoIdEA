@@ -120,17 +120,19 @@ class Login extends CI_Controller{
                 if(!$result) return "register";
             }
             //start session
-            /*$userData = $this->userDAO->selectUserData("email", $pessoaModel->getEmail());
+            $pessoa = $this->pessoaDAO->getUser(array('where' => array('id'=>$userExist->getId())));
 
-            if(!$userData){
-                return false;
-            }
+            if(!$pessoa)return "login";
 
-            $additionalInfo = array(
+            $thirdData = array(
                 "picture" => $payload["picture"]
             );
+            $input = array(
+                'pessoaModel' => $pessoa,
+                'thirdData' => $thirdData
+            );
 
-            return $this->startSession($userData, $additionalInfo);*/
+            return $this->startSession($input);
         }
         
         /**
@@ -214,14 +216,19 @@ class Login extends CI_Controller{
          * @param array $additionalInfo
          * @return true
          */
-        private function startSession($userData, $additionalInfo = array()){  
-            
+        private function startSession($input = array()){  
+            if(!isset($input['pessoaModel'])) return false;
+
+            $pessoa = $input['pessoaModel'];
+
             $this->session->set_userdata("logged", true);
-            $this->session->set_userdata("userId", $userData->getId());
-            $this->session->set_userdata("email", $userData->getEmail());
-            $this->session->set_userdata("nome", $userData->getNome());
-            $this->session->set_userdata("sobrenome", $userData->getSobrenome());
-            $this->session->set_userdata("thirdInfo", $additionalInfo);
+            $this->session->set_userdata("userId", $pessoa->getId());
+            $this->session->set_userdata("email", $pessoa->getEmail());
+            $this->session->set_userdata("nome_completo", $pessoa->getNomeCompleto());
+            $this->session->set_userdata("nome", $pessoa->getNome());
+            $this->session->set_userdata("sobrenome", $pessoa->getSobrenome());
+            
+            if(isset($input['thirdData'])) $this->session->set_userdata("thirdData", $input['thirdData']);
             
             return true;
         }

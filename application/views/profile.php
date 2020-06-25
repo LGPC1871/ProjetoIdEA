@@ -22,33 +22,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </div>
         <div class="mt-4">
             <ul class="nav nav-tabs justify-content-center">
-                <?php if($privilegio->getId() <= 3): ?>
-                    <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#participante" role="tab" aria-controls="3" aria-selected="true">Participar</a>
-                    </li>
-                <?php endif ?>
-                <?php if($privilegio->getId() <= 2): ?>
-                    <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#palestrante" role="tab" aria-controls="2" aria-selected="false">Palestrar</a>
-                    </li>
-                <?php endif ?>
-                <?php if($privilegio->getId() == 1): ?>
-                    <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#administrador" role="tab" aria-controls="1" aria-selected="false">Administrar</a>
-                    </li>
-                <?php endif ?>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#participante" role="tab" aria-controls="3" aria-selected="true">TESTE</a>
+                </li>
             </ul>
         </div>
         <div class="tab-content">
-            <?php if($privilegio->getId() <= 3): ?>
-                <div class="tab-pane fade" id="participante" role="tabpanel" aria-labelledby="tab-participante"></div>
-            <?php endif ?>
-            <?php if($privilegio->getId() <= 2): ?>
-                <div class="tab-pane fade" id="palestrante" role="tabpanel" aria-labelledby="tab-palestrante"></div>
-            <?php endif ?>
-            <?php if($privilegio->getId() == 1): ?>
-                <div class="tab-pane fade" id="administrador" role="tabpanel" aria-labelledby="tab-administrador"></div>
-            <?php endif ?>
+            <div class="tab-pane fade" id="participante" role="tabpanel" aria-labelledby="tab-participante">TESTE</div>
         </div>
     </div>
     <!--No display-->

@@ -1,4 +1,9 @@
-function onSignIn(googleUser) {
+/*
+|--------------------------------------------------------------------------
+| Funções
+|--------------------------------------------------------------------------
+*/
+function googleSignIn(googleUser) {
     var id_token = googleUser.getAuthResponse().id_token;
     
     /*
@@ -17,7 +22,7 @@ function onSignIn(googleUser) {
     let sendToBackEnd= function(jsonInput){
         $.ajax({
             type: "POST",
-            url: `ajaxLoginGoogle`,
+            url: `login/ajaxLoginGoogle`,
             dataType: "json",
             data: jsonInput,
 
