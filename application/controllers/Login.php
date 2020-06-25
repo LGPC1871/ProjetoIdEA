@@ -240,7 +240,6 @@ class Login extends CI_Controller{
          */
         public function endSession(){
             $this->session->sess_destroy();
-            redirect('user');
         }
 
 
