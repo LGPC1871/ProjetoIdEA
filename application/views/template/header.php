@@ -17,7 +17,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <div id="profile-header" class="p-2 d-flex justify-content-center align-self-center align-items-center ml-sm-auto">
                     <?php if($this->session->userdata("logged") == true): ?>
                         <!--USUARIO LOGADO-->
-                        <a href="<?=$diretorio?>session/profile">
+                        <a href="<?=$diretorio?>user/profile">
                             <?php if($thirdInfo["picture"]):?>
                                 <img class="rounded-circle" src="<?=$thirdInfo["picture"]?>" alt="img-perfil">
                             <?php else :?>
@@ -26,7 +26,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <?=$nome?>
                         </a>
                     <?php else:?>
-                        <a href="<?=$diretorio?>session"><i class="far fa-user-circle fa-lg"></i>&nbsp ENTRAR</a>
+                        <a href="<?=$diretorio?>user"><i class="far fa-user-circle fa-lg"></i>&nbsp ENTRAR</a>
                     <?php endif ?>
                 </div>
             </div>

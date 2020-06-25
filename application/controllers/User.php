@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Session extends CI_Controller{
+class User extends CI_Controller{
     
     public function __construct(){
         parent::__construct();
@@ -26,9 +26,9 @@ class Session extends CI_Controller{
     
     public function index(){
         if($this->session->userdata("logged") == true){
-            redirect('session/profile');
+            redirect('user/profile');
         }else{
-            redirect('session/login');
+            redirect('user/login');
         }
     }
     /*
@@ -52,7 +52,7 @@ class Session extends CI_Controller{
             if($this->session->userdata("logged")){
                 redirect('profile');
             }else{
-                redirect('session');
+                redirect('user');
             }
         }
 
