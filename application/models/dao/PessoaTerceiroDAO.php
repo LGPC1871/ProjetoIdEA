@@ -22,40 +22,31 @@ class PessoaTerceiroDAO extends DAO{
             $requiredInput = array(
                 'pessoaTerceiroModel',
             );
-            if(!$this->_required($requiredInput, $input)) return false;
+            if(!$this->_required($requiredInput, $input, 1)) return false;
 
             $pessoaTerceiro = $input['pessoaTerceiroModel'];
 
             //verificar se o objeto contem os atributos requisitados
-            $requiredPessoaTerceiroAttr = array(
+            $requiredPessoaTerceiro = array(
                 'terceiro_id',
                 'pessoa_id',
                 'id_pessoa_terceiro'
             );
-            $pessoaTerceiroAttr = $this->PessoaTerceiroModel->_verifyObjectAttr($pessoaTerceiro);
-            if(!$this->_required($requiredPessoaTerceiroAttr, $pessoaTerceiroAttr)) return false;
-
+            $pessoaTerceiroAttr = $pessoaTerceiro->_verifyObjectAttr($pessoaTerceiro);
+            if(!$this->_required($requiredPessoaTerceiro, $pessoaTerceiroAttr, 2)) return false;
+            
             //executar insert em @pesoa_terceiro
-            $result = $this->create($pessoaTerceiro);
-
+            $atributos = array(
+                'terceiro_id' => $pessoaTerceiro->getTerceiroId(),
+                'pessoa_id' => $pessoaTerceiro->getPessoaId(),
+                'id_pessoa_terceiro' => $pessoaTerceiro->getPessoaTerceiroId()
+            );
+            $options = array(
+                'table' => 'pessoa_terceiro',
+                'values' => $atributos,
+                'return' => 'boolean'
+            );
+            $result = $this->create($options);
             return $result;
-        }
-    /*
-    |--------------------------------------------------------------------------
-    | CRUD
-    |--------------------------------------------------------------------------
-    | Funções CRUD da classe
-    */
-    /**
-         * método create insere um novo registro em @pessoa_terceiro
-         * @param object $pessoaTerceiroModel
-         * @return bool
-         */
-        private function create($pessoaTerceiroModel){
-            $this->db->set("terceiro_id", $pessoaTerceiroModel->getTerceiroId());
-            $this->db->set("pessoa_id", $pessoaTerceiroModel->getPessoaId());
-            $this->db->set("id_pessoa_terceiro", $pessoaTerceiroModel->getPessoaTerceiroId());
-    
-            return $this->db->insert('pessoa_terceiro') ? true : false;
         }
 }

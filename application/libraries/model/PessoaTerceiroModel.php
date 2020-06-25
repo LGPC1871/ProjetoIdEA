@@ -7,15 +7,27 @@ class PessoaTerceiroModel{
 
     public function __construct(){
     }
-    private static function _verifyObjectAttr($pessoaTerceiroModel){
-        $response = array();
+    /*
+    |--------------------------------------------------------------------------
+    | PUBLIC
+    |--------------------------------------------------------------------------
+    | Todas as funções da classe
+    */
+        /**
+         * Método required, retorna quais atributos do objeto inserido
+         * NÃO são nulos
+         * @param object $pessoaModel
+         * @return array
+         */
+        public function _verifyObjectAttr(){
+            $response = array();
 
-        if($pessoaTerceiroModel->getTerceiroId()) $response[] = 'terceiro_id';
-        if($pessoaTerceiroModel->getPessoaId()) $response[] = 'pessoa_id';
-        if($pessoaTerceiroModel->getPessoaTerceiroId()) $response[] = 'id_pessoa_terceiro';
-        
-        return $response;
-    }
+            if($this->getTerceiroId()) $response['terceiro_id'] = true;
+            if($this->getPessoaId()) $response['pessoa_id'] = true;
+            if($this->getPessoaTerceiroId()) $response['id_pessoa_terceiro'] = true;
+            
+            return $response;
+        }
     /*
     |--------------------------------------------------------------------------
     | Getter`s & Setter`s

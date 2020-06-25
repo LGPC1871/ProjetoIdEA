@@ -9,23 +9,27 @@ class User extends CI_Controller{
         //REQUIRES\\
         require_once(APPPATH . 'libraries/model/PessoaModel.php');
         require_once(APPPATH . 'libraries/model/PessoaTerceiroModel.php');
-        $this->load->model('UserDAO', 'userDAO');
+        require_once(APPPATH . 'libraries/model/TerceiroModel.php');
+        require_once(APPPATH . 'libraries/model/PessoaPrivilegioModel.php');
+        require_once(APPPATH . 'libraries/model/PrivilegioModel.php');
+
+        //LOADS\\
+        $this->load->model('dao/PessoaDAO', 'pessoaDAO');
+        $this->load->model('dao/TerceiroDAO', 'terceiroDAO');
+        $this->load->model('dao/PessoaTerceiroDAO', 'pessoaTerceiroDAO');
+        $this->load->model('dao/PrivilegioDAO', 'privilegioDAO');
+        $this->load->model('dao/PessoaPrivilegioDAO', 'pessoaPrivilegioDAO');
+
         $this->config->load('google');
 
     }
     
     public function index(){
-
         if($this->session->userdata("logged") == true){
-
             redirect('user/profile');
-            
         }else{
-
             redirect('user/login');
-
         }
-
     }
     /*
     |--------------------------------------------------------------------------
@@ -34,23 +38,17 @@ class User extends CI_Controller{
     | Todas as funções que chamam view
     */
         public function login(){
-
             if(!$this->session->userdata("logged")){
-
                 $content = array(
                     "head_scripts" => array('https://apis.google.com/js/platform.js', 'https://apis.google.com/js/platform.js?onload=renderButton'),
                     "scripts" => array('loginGoogle.js', 'util.js'),
                     );
                 $this->template->show('login.php', $content);
-
             }else{
-
                 redirect('user');
-
             }
         }
         public function profile(){
-
             if($this->session->userdata("logged")){
                 redirect('profile');
             }else{
@@ -93,6 +91,14 @@ class User extends CI_Controller{
     |--------------------------------------------------------------------------
     | Todas as funções relacionadas ao Google exceto ajax
     */
+        /**
+         * funcao googleLogin
+         * efetua login com conta google,
+         * cadastra ou atualiza dados da pessoa
+         * @param GoogleToken
+         * @return string - erro
+         * @return boolean - sucesso
+         */
         private function googleLogin($token){
 
             $payload = $this->googleAuth($token);
@@ -101,27 +107,34 @@ class User extends CI_Controller{
                 return "authentication";
             }
 
-            $googleUserData = $this->googleUserModel($payload);
-            $userThirdData = $this->googleUserThirdModel($payload['sub']);
-
-            if(!$googleUserData){
-                return "info_lack";
-            }
-            $userExist = $this->userDAO->userExist($googleUserData->getEmail());
+            $pessoaModel = $this->googleUserModel($payload);
             
+            if(!$pessoaModel) return "info_lack";
+            $pessoaTerceiroModel = $this->googlePessoaTerceiro($payload['sub']);
+
+            if(!$pessoaTerceiroModel) return "invalid_third";
+            
+            $userExist = $this->pessoaDAO->getUser(array('where' => array('email'=>$pessoaModel->getEmail())));
             if($userExist){
                 //update
-                $updateUser = $this->userDAO->updateUser($googleUserData, $userThirdData);
-
-                if(!$updateUser) return "update";
+                $input = array(
+                    'pessoaModel' => $pessoaModel,
+                    'pessoaTerceiroModel' => $pessoaTerceiroModel
+                );
+                $result = $this->updateUser($input);
+                if(!$result) return "update";
             }else{
                 //register
-                $addUser = $this->userDAO->insertNewUser($googleUserData, $userThirdData);
+                $input = array(
+                    'pessoaModel' => $pessoaModel,
+                    'pessoaTerceiroModel' => $pessoaTerceiroModel
+                );
+                $result = $this->registerUser($input);
 
-                if(!$addUser) return "register";
+                if(!$result) return "register";
             }
             //start session
-            $userData = $this->userDAO->selectUserData("email", $googleUserData->getEmail());
+            /*$userData = $this->userDAO->selectUserData("email", $pessoaModel->getEmail());
 
             if(!$userData){
                 return false;
@@ -131,9 +144,15 @@ class User extends CI_Controller{
                 "picture" => $payload["picture"]
             );
 
-            return $this->startSession($userData, $additionalInfo);
+            return $this->startSession($userData, $additionalInfo);*/
         }
         
+        /**
+         * funcao googleAuth
+         * autenticacao da sessao google
+         * @param token
+         * @return payload
+         */
         private function googleAuth($token){
           
             $result = true;
@@ -148,6 +167,14 @@ class User extends CI_Controller{
 
         }
 
+        /**
+         * funcao googleUserModel
+         * gera um objeto contendo as informacoes
+         * do usuário
+         * @param payload
+         * @return PessoaModel
+         * @return false
+         */
         private function googleUserModel($payload){
             $error = false;
 
@@ -155,23 +182,38 @@ class User extends CI_Controller{
 
             isset($payload['email']) ? $userData->setEmail($payload['email']) : $error = true;
             isset($payload['name']) ? $userData->setNomeCompleto($payload['name']) : $error = true;
-            isset($payload['given_name']) ? $userData->setNome($payload['given_name']) : null;
+            isset($payload['given_name']) ? $userData->setNome($payload['given_name']) : $error = true;
             isset($payload['family_name']) ?$userData->setSobrenome($payload['family_name']) : null;
             
             return $error ? false : $userData;
         }
+        
+        /**
+         * Método instancia um objeto PessoaTerceiro
+         * retorna com pessoaId null, deve ser adicionado posteriormente
+         * @param string $sub
+         * @return object
+         */
+        private function googlePessoaTerceiro($sub){
+            
+            //faz uma busca em @terceiro
+            //retornará false se o terceiro nao existir
+            $like = array(
+                'nome' => 'google'
+            );
+            $options = array(
+                'like' => $like
+            );
+            $terceiro = $this->terceiroDAO->getTerceiro($options);
+            
+            if(!$terceiro) return false;
+            $terceiroId = $terceiro->getId();
 
-        private function googleUserThirdModel($sub){
-
-            $userThirdData = new PessoaTerceiroModel();
-
-            $terceiroId = $this->userDAO->selectThirdId('google');
-
-            $userThirdData->setTerceiroId($terceiroId);
-            $userThirdData->setPessoaTerceiroId($sub);
-
-            return $userThirdData;
-
+            $pessoaTerceiro = new PessoaTerceiroModel();
+            $pessoaTerceiro->setTerceiroId($terceiroId);
+            $pessoaTerceiro->setPessoaTerceiroId($sub);
+            
+            return $pessoaTerceiro;
         }
 
     /*
@@ -180,7 +222,13 @@ class User extends CI_Controller{
     |--------------------------------------------------------------------------
     | Todas as funções relacionadas a sessão do usuário
     */
-        
+        /**
+         * funcao startSession
+         * inicia uma sessao na aplicação
+         * @param PessoaModel
+         * @param array $additionalInfo
+         * @return true
+         */
         private function startSession($userData, $additionalInfo = array()){  
             
             $this->session->set_userdata("logged", true);
@@ -193,19 +241,81 @@ class User extends CI_Controller{
             return true;
         }
 
+        /**
+         * funcao endSession
+         * finaliza a sessao do usuário na aplicação
+         * @return null
+         */
         public function endSession(){
             $this->session->sess_destroy();
             redirect('user');
         }
 
+
     /*
     |--------------------------------------------------------------------------
-    | Cadastrar Usuário
+    | PRIVATE
     |--------------------------------------------------------------------------
-    | Cadastrar um novo usuário
+    | Todas as funções da classe
     */
+        /**
+         * método registerUser
+         * cadastra um novo usuário na aplicação
+         * retorna false se a operação falhar
+         * @param array $input
+         * @return bool
+         */
+        private function registerUser($input = array()){
+            //executar método em @pessoa
+            $inputPessoaDAO = array(
+                'pessoaModel' => $input['pessoaModel']
+            );
+            $pessoaId = $this->pessoaDAO->addUser($inputPessoaDAO);
+            if(!$pessoaId) return false;
 
-        private function registerUser($userModel){
-            return $this->userDAO->insertNewUser($userModel);
+            //executar método em @pessoa_terceiro
+            $pessoaTerceiroModel = $input['pessoaTerceiroModel'];
+            $pessoaTerceiroModel->setPessoaId($pessoaId);
+            $inputPessoaTerceiroDAO = array(
+                'pessoaTerceiroModel' => $pessoaTerceiroModel
+            );
+            if(!$this->pessoaTerceiroDAO->addPessoaTerceiro($inputPessoaTerceiroDAO)) return false;
+
+            //executar método em @pessoa_privilegio com privilégio inicial padrao
+            $like = array(
+                'nome' => 'participante'
+            );
+            $options = array(
+                'like' => $like
+            );
+            $privilegio = $this->privilegioDAO->getPrivilegio($options);
+
+            $pessoaPrivilegio = new PessoaPrivilegioModel();
+            $pessoaPrivilegio->setPessoaId($pessoaId);
+            $pessoaPrivilegio->setPrivilegioId($privilegio->getId());
+
+            $inputPessoaPrivilegioDAO = array(
+                'pessoaPrivilegioModel' => $pessoaPrivilegio
+            );
+
+            if(!$this->pessoaPrivilegioDAO->addPrivilege($inputPessoaPrivilegioDAO)) return false;
+
+            //@return
+            return true;
+        }
+
+        /**
+         * método updateUser
+         * atualiza informações do usuário
+         * @param array $input
+         * @return boolean
+         */
+        private function updateUser($input = array()){
+            $inputPessoaDAO = array(
+                'pessoaModel' => $input['pessoaModel']
+            );
+            if(!$this->pessoaDAO->updateUser($inputPessoaDAO)) return false;
+            
+            return true;
         }
 }

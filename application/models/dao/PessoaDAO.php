@@ -3,7 +3,7 @@
 class PessoaDAO extends DAO{
     public function __construct(){
         parent::__construct();
-        require_once(APPPATH . 'libraries/model/PessoaModel.php');
+        $this->load->library('model/PessoaModel', 'pessoaModel');
     }
 
     /*
@@ -20,28 +20,77 @@ class PessoaDAO extends DAO{
          * @return int
          * @return false
          */
-            public function addUser($input = array()){
-                //verificar se input bate com requisitos
-                $requiredInput = array(
-                    'pessoaModel',
-                );
-                if(!$this->_required($requiredInput, $input)) return false;
+        public function addUser($input = array()){
+            //verificar se input bate com requisitos
+            $requiredInput = array(
+                'pessoaModel',
+            );
+            if(!$this->_required($requiredInput, $input, 1)) return false;
 
-                $pessoa = $input['pessoaModel'];
+            $pessoa = $input['pessoaModel'];
 
-                //verificar se o objeto bate com os requisitos
-                $requiredPessoa = array(
-                    'email',
-                    'nome',
-                );
-                $pessoaAttr = $this->PessoaModel->_verifyObjectAttr($pessoa);
-                if(!$this->_required($requiredPessoa, $pessoaAttr)) return false;
-                
-                $newUserId = $this->insertPessoa($pessoa);
-                if(!$newUserId) return false;
+            //verificar se o objeto bate com os requisitos
+            $requiredPessoa = array(
+                "email",
+                "nome",
+            );
+            $pessoaAttr = $pessoa->_verifyObjectAttr();
+            if(!$this->_required($requiredPessoa, $pessoaAttr, 2)) return false;
+            
+            //preparar options para o insert
+            $time = date("Y-m-d H:i:s");
+            $atributos = array(
+                'email' => $pessoa->getEmail(),
+                'nome_completo' => $pessoa->getNomeCompleto(),
+                'nome' => $pessoa->getNome(),
+                'sobrenome' => $pessoa->getSobrenome(),
+                'created' => $time,
+                'updated' => $time
+            );
 
-                return $newUserId;
-            }
+            $options = array(
+                'table' => 'pessoa',
+                'values' => $atributos
+            );
+            
+            $newUserId = $this->create($options);
+            if(!$newUserId) return false;
+
+            return $newUserId;
+        }
+        /**
+         * Método getUser
+         * retorna um objeto de um único usuário
+         * retorna false se a operacao falhar
+         * retorna false se o usuário não existe
+         * @param array $options
+         * @return PessoaModel
+         * @return false
+         */
+        public function getUser($options = array()){
+            $required = array(
+                'where'
+            );
+            if(!$this->_required($required, $options, 1)) return false;
+            
+            $default = array(
+                'from' => 'pessoa'
+            );
+            $options = $this->_default($default, $options);
+
+            $result = $this->readSingle($options);
+
+            if(!$result)return false;
+
+            $pessoa = new PessoaModel();
+            $pessoa->setId($result->id);
+            $pessoa->setEmail($result->email);
+            $pessoa->setNomeCompleto($result->nome_completo);
+            $pessoa->setNome($result->nome);
+            $pessoa->setSobrenome($result->sobrenome);
+            
+            return $pessoa;
+        }
         /**
          * Método removeUser
          * remove um registro da tabela @pessoa
@@ -50,63 +99,45 @@ class PessoaDAO extends DAO{
          * @return boolean
          * @return false
          */
-            public function removeUser($input = array()){
-                $requiredInput = array(
-                    'userId'
-                );
-                if(!$this->_required($requiredInput, $input)) return false;
-
-                $userId = $input['userId'];
-
-                $result = $this->delete($userId);
-
-                return $result;
-            }
-
-    /*
-    |--------------------------------------------------------------------------
-    | CRUD
-    |--------------------------------------------------------------------------
-    | Funções CRUD da classe
-    */
+        public function removeUser($input = array()){
+            //IMPLEMENTAR
+        }
         /**
-         * método create insere um novo registro em @pessoa
-         * retorna falso se a operação não for concluída com êxito
-         * @param object $pessoaModel
-         * @return bool
+         * Método updateUser
+         * atualiza registro de um usuário
+         * retorna false se a operacao falhar
+         * realiza update em
+         * email nome sobrenome nome_completo updated
+         * @param array $input
+         * @return boolean
          */
-        private function create($pessoaModel){
+        public function updateUser($input = array()){
+            $required = array(
+                'pessoaModel',
+            );
+            if(!$this->_required($required, $input, 1)) return false;
+
+            $pessoa = $input['pessoaModel'];
+
+            //preparar options para o insert
             $time = date("Y-m-d H:i:s");
-    
-            $this->db->set("email", $pessoaModel->getEmail());
-            $this->db->set("nome_completo", $pessoaModel->getnomeCompleto());
-            $this->db->set("nome", $pessoaModel->getNome());
-            $this->db->set("sobrenome", $pessoaModel->getSobrenome());
-            $this->db->set("created", $time);
-            $this->db->set("updated", $time);
-    
-            return $this->db->insert('pessoa') ? $this->db->insert_id() : false;
+            $atributos = array(
+                'email' => $pessoa->getEmail(),
+                'nome_completo' => $pessoa->getNomeCompleto(),
+                'nome' => $pessoa->getNome(),
+                'sobrenome' => $pessoa->getSobrenome(),
+                'updated' => $time
+            );
+
+            $options = array(
+                'where' => array('email' => $pessoa->getEmail()),
+                'table' => 'pessoa',
+                'values' => $atributos
+            );
+
+            $result = $this->update($options);
+            
+            return $result;
         }
 
-        /**
-         * método read
-         */
-        private function read(){}
-
-        /**
-         * método update
-         */
-        private function update(){}
-
-        /**
-         * método delete deleta registro em @pessoa,
-         * obs: pode deletar em CASCATA em todas as tabelas que possuem
-         * relacionamento com @pessoa, usar com EXTREMA CAUTELA
-         * @param int $userId
-         * @return bool
-         */
-        private function delete($userId){
-            $this->db->where('id', $userId);
-            return $this->db->delete('pessoa');
-        }
 }

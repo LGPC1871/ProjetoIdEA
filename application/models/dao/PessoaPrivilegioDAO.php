@@ -11,23 +11,33 @@ class PessoaPrivilegioDAO extends DAO{
     |--------------------------------------------------------------------------
     | Funções do acesso de dados da classe
     */
+        public function addPrivilege($input = array()){
+            //verificar se input bate com requisitos
+            $requiredInput = array(
+                'pessoaPrivilegioModel',
+            );
+            if(!$this->_required($requiredInput, $input, 1)) return false;
+            $pessoaPrivilegio = $input['pessoaPrivilegioModel'];
+            
+            //verificar se o objeto contem os atributos requisitados
+            $requiredPessoaPrivilegio = array(
+                'pessoa_id',
+                'privilegio_id',
+            );
+            $pessoaPrivilegioAttr = $pessoaPrivilegio->_verifyObjectAttr($pessoaPrivilegio);
+            if(!$this->_required($requiredPessoaPrivilegio, $pessoaPrivilegioAttr, 2)) return false;
 
-    /*
-    |--------------------------------------------------------------------------
-    | CRUD
-    |--------------------------------------------------------------------------
-    | Funções CRUD da classe
-    */
-        /**
-         * método create insere um novo registro em @pessoa_privilegio
-         * @param object $pessoaPrivilegioModel
-         * @return bool
-         */
-        private function create($pessoaPrivilegioModel){
-                
-            $this->db->set('pessoa_id', $pessoaPrivilegioModel->getPessoaId());
-            $this->db->set('privilegio_id', $pessoaPrivilegioModel->getPrivilegioId());
+            //preparar options para o insert
+            $atributos = array(
+                'pessoa_id' => $pessoaPrivilegio->getPessoaId(),
+                'privilegio_id' => $pessoaPrivilegio->getPrivilegioId()
+            );
+            $options = array(
+                'table' => 'pessoa_privilegio',
+                'values' => $atributos,
+                'return' => 'boolean'
+            );
 
-            return $this->db->insert('pessoa_privilegio') ? true : false;
+            return $this->create($options);
         }
 }

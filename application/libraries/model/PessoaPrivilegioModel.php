@@ -4,7 +4,28 @@ class PessoaPrivilegioModel{
     private $pessoaId;
     private $privilegioId;
     private $privilegioNome;
-    
+    /*
+    |--------------------------------------------------------------------------
+    | PRIVATE STATIC
+    |--------------------------------------------------------------------------
+    | Todas as funções da classe
+    */
+
+        /**
+         * Método required, retorna quais atributos do objeto inserido
+         * NÃO são nulos
+         * @param object $pessoaModel
+         * @return array
+         */
+        public function _verifyObjectAttr(){
+            $response = array();
+
+            if($this->getPessoaId()) $response['pessoa_id'] = true;
+            if($this->getPrivilegioId()) $response['privilegio_id'] = true;
+            if($this->getPrivilegioNome()) $response['nome'] = true;
+
+            return $response;
+        }
     /*
     |--------------------------------------------------------------------------
     | Getter`s & Setter`s
@@ -47,6 +68,26 @@ class PessoaPrivilegioModel{
         public function setPrivilegioId($privilegioId)
         {
             $this->privilegioId = $privilegioId;
+
+            return $this;
+        }
+
+        /**
+         * Get the value of privilegioNome
+         */ 
+        public function getPrivilegioNome()
+        {
+            return $this->privilegioNome;
+        }
+
+        /**
+         * Set the value of privilegioNome
+         *
+         * @return  self
+         */ 
+        public function setPrivilegioNome($privilegioNome)
+        {
+            $this->privilegioNome = $privilegioNome;
 
             return $this;
         }

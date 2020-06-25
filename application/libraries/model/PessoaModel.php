@@ -14,7 +14,7 @@ class PessoaModel{
     }
     /*
     |--------------------------------------------------------------------------
-    | PRIVATE STATIC
+    | PUBLIC
     |--------------------------------------------------------------------------
     | Todas as funções da classe
     */
@@ -25,19 +25,18 @@ class PessoaModel{
          * @param object $pessoaModel
          * @return array
          */
-            private static function _verifyObjectAttr($pessoaModel){
-                $response = array();
-
-                if($pessoaModel->getId()) $response[] = 'id';
-                if($pessoaModel->getEmail()) $response[] = 'email';
-                if($pessoaModel->getNomeCompleto()) $response[] = 'nomeCompleto';
-                if($pessoaModel->getNome()) $response[] = 'nome';
-                if($pessoaModel->getSobrenome()) $response[] = 'sobrenome';
-                if($pessoaModel->getCreated()) $response[] = 'created';
-                if($pessoaModel->getUpdated()) $response[] = 'updated';
-                
-                return $response;
-            }
+        public function _verifyObjectAttr(){
+            $response = array();
+            if($this->getId()) $response['id'] = true;
+            if($this->getEmail()) $response['email'] = true;
+            if($this->getNomeCompleto()) $response['nomeCompleto'] = true;
+            if($this->getNome()) $response['nome'] = true;
+            if($this->getSobrenome()) $response['sobrenome'] = true;
+            if($this->getCreated()) $response['created'] = true;
+            if($this->getUpdated()) $response['updated'] = true;
+            
+            return $response;
+        }
     /*
     |--------------------------------------------------------------------------
     | Getter`s & Setter`s

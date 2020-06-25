@@ -11,12 +11,32 @@ class PrivilegioDAO extends DAO{
     |--------------------------------------------------------------------------
     | Funções do acesso de dados da classe
     */
+        /**
+         * método getPrivilegio
+         * retorna um objeto privilegio
+         * @param array $options
+         * @return PrivilegioModel
+         */
+            public function getPrivilegio($options = array()){
+                $required = array(
+                    'like'
+                );
+                if(!$this->_required($required, $options, 1)) return false;
+                
+                $default = array(
+                    'from' => 'privilegio'
+                );
+                $options = $this->_default($default, $options);
+                
+                $result = $this->readSingle($options);
 
-    /*
-    |--------------------------------------------------------------------------
-    | CRUD
-    |--------------------------------------------------------------------------
-    | Funções CRUD da classe
-    */
+                if(!$result)return false;
+
+                $privilegio = new PrivilegioModel;
+                $privilegio->setId($result->id);
+                $privilegio->setNome($result->nome);
+
+                return $privilegio;
+            }
 
 }
