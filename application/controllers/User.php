@@ -152,10 +152,9 @@ class User extends CI_Controller{
          * autenticacao da sessao google
          * @param token
          * @return payload
+         * @return false
          */
         private function googleAuth($token){
-          
-            $result = true;
 
             $clientId = $this->config->item('client_id', 'google');
 
@@ -279,7 +278,10 @@ class User extends CI_Controller{
             $inputPessoaTerceiroDAO = array(
                 'pessoaTerceiroModel' => $pessoaTerceiroModel
             );
-            if(!$this->pessoaTerceiroDAO->addPessoaTerceiro($inputPessoaTerceiroDAO)) return false;
+            if(!$this->pessoaTerceiroDAO->addPessoaTerceiro($inputPessoaTerceiroDAO)){
+                $this->pessoaDAO->removeUser(array('where' => array('id' => $pessoaId)));
+                return false;
+            } 
 
             //executar método em @pessoa_privilegio com privilégio inicial padrao
             $like = array(
@@ -298,7 +300,11 @@ class User extends CI_Controller{
                 'pessoaPrivilegioModel' => $pessoaPrivilegio
             );
 
-            if(!$this->pessoaPrivilegioDAO->addPrivilege($inputPessoaPrivilegioDAO)) return false;
+            if(!$this->pessoaPrivilegioDAO->addPrivilege($inputPessoaPrivilegioDAO)){
+                $this->pessoaDAO->removeUser(array('where' => array('id' => $pessoaId)));
+                $this->pessoaTerceiroDAO->removePessoaTerceiro(array('where' => array('pessoa_id' => $pessoaId)));
+                return false;
+            } 
 
             //@return
             return true;
@@ -315,7 +321,7 @@ class User extends CI_Controller{
                 'pessoaModel' => $input['pessoaModel']
             );
             if(!$this->pessoaDAO->updateUser($inputPessoaDAO)) return false;
-            
+
             return true;
         }
 }

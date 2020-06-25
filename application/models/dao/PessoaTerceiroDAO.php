@@ -49,4 +49,22 @@ class PessoaTerceiroDAO extends DAO{
             $result = $this->create($options);
             return $result;
         }
+
+        /**
+         * Método remove registro da tabela @pessoa_terceiro
+         * @param array $input
+         * @return boolean
+         */
+        public function removePessoaTerceiro($input = array()){
+            $required = array(
+                'where'
+            );
+            if(!$this->_required($required, $input, 1)) return false;
+            
+            $input['table'] = 'pessoa_terceiro';
+
+            $result = $this->delete($input);
+
+            return $result;
+        }
 }

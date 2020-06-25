@@ -58,6 +58,7 @@ class PessoaDAO extends DAO{
 
             return $newUserId;
         }
+
         /**
          * Método getUser
          * retorna um objeto de um único usuário
@@ -73,10 +74,7 @@ class PessoaDAO extends DAO{
             );
             if(!$this->_required($required, $options, 1)) return false;
             
-            $default = array(
-                'from' => 'pessoa'
-            );
-            $options = $this->_default($default, $options);
+            $options['from'] = 'pessoa';
 
             $result = $this->readSingle($options);
 
@@ -91,6 +89,7 @@ class PessoaDAO extends DAO{
             
             return $pessoa;
         }
+
         /**
          * Método removeUser
          * remove um registro da tabela @pessoa
@@ -100,14 +99,24 @@ class PessoaDAO extends DAO{
          * @return false
          */
         public function removeUser($input = array()){
-            //IMPLEMENTAR
+            $required = array(
+                'where'
+            );
+            if(!$this->_required($required, $input, 1)) return false;
+            
+            $input['table'] = 'pessoa';
+
+            $result = $this->delete($input);
+
+            return $result;
         }
+
         /**
          * Método updateUser
          * atualiza registro de um usuário
          * retorna false se a operacao falhar
          * realiza update em
-         * email nome sobrenome nome_completo updated
+         * nome sobrenome nome_completo updated
          * @param array $input
          * @return boolean
          */
@@ -122,7 +131,6 @@ class PessoaDAO extends DAO{
             //preparar options para o insert
             $time = date("Y-m-d H:i:s");
             $atributos = array(
-                'email' => $pessoa->getEmail(),
                 'nome_completo' => $pessoa->getNomeCompleto(),
                 'nome' => $pessoa->getNome(),
                 'sobrenome' => $pessoa->getSobrenome(),
@@ -136,7 +144,7 @@ class PessoaDAO extends DAO{
             );
 
             $result = $this->update($options);
-            
+
             return $result;
         }
 
