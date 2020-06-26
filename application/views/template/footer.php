@@ -8,7 +8,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <div id="footer-logo" class="col flex-fill order-3 order-md-2 p-2 d-flex justify-content-center mb-auto">
                     <div class="d-flex flex-column justify-content-center">
                         <div class="p-2 align-self-center">
-                            <img src="/public/images/unicamp-logo-dark.svg" alt="unicamp logo" style="">
+                            <img src="<?=$diretorio?>public/images/unicamp-logo-dark.svg" alt="unicamp logo" style="">
                         </div>
                         <small class="text-muted text-center">
                             IdEA
