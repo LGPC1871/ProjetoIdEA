@@ -28,7 +28,7 @@ class PrivilegioDAO extends DAO{
                 );
                 $options = $this->_default($default, $options);
                 
-                $result = $this->readSingle($options);
+                $result = $this->read($options);
 
                 if(!$result)return false;
 

@@ -40,4 +40,31 @@ class PessoaPrivilegioDAO extends DAO{
 
             return $this->create($options);
         }
+
+        /**
+         * Essa função vai retornar um array
+         * com o nome de todos os privilegios
+         * que o usuário inserido possui
+         * @param int $pessoaId
+         * @return array $privilegios
+         */
+        public function getPessoaPrivilegios($pessoaId){
+            if(!$pessoaId) return false;
+            $options = array(
+                'select' => array('privilegio.nome'),
+                'from' => 'pessoa_privilegio',
+                'join' => array(array(
+                    'table' => 'privilegio',
+                    'join' => 'inner',
+                    'on' => 'privilegio_id = id'
+                    )
+                ),
+                'where' => array(
+                    'pessoa_id' => $pessoaId
+                ),
+                'return' => 'multiple'
+            );
+
+            return $this->read($options);
+        }
 }

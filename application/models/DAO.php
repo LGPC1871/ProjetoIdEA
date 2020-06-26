@@ -90,14 +90,14 @@ class DAO extends CI_Model{
             
         }
         /**
-         * Método read e readSingle
+         * Método read
          * executa um select na tabela especificada
          * retorna false se o select falhar
          * @param array $options
          * @return object
          * @return false
          */
-        protected function readSingle($options = array()){
+        protected function read($options = array()){
             $required = array(
                 'from'
             );
@@ -106,7 +106,9 @@ class DAO extends CI_Model{
             $defaultOptions = array(
                 'select' => array('*'),
                 'where' => array(0 => 0),
-                'like' => array(0 => 0)
+                'like' => array(0 => 0),
+                'return' => 'row',
+                'join' => null /*array(0 => array())*/
             );
             $options = $this->_default($defaultOptions, $options);
 
@@ -124,13 +126,28 @@ class DAO extends CI_Model{
             foreach($select as $key=>$valor){
                 $this->db->select($valor);
             }
+            if(isset($options['join'])){
+                $join = $options['join'];
+                foreach($join as $joinOptions){
+                    $this->db->join($joinOptions['table'], $joinOptions['on'], $joinOptions['join']);
+                }
+            }
             $this->db->from($from);
 
             $result = $this->db->get();
             
-            if(!$result->num_rows() == 1) return false;
+            //@return
+            if($options['return'] == 'row'){
+                if(!$result->num_rows() == 1) return false;
+                return $result->row();
+            }
+            if($options['return'] == 'multiple'){
+                return $result->result();
+            }
+            if($options['return'] == 'array'){
+                return $result->result_array();
+            }
 
-            return $result->row();
         }
         /**
          * Método update

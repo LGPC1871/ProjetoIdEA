@@ -6,7 +6,7 @@ class PessoaPrivilegioModel{
     private $privilegioNome;
     /*
     |--------------------------------------------------------------------------
-    | PRIVATE STATIC
+    | PUBLIC
     |--------------------------------------------------------------------------
     | Todas as funções da classe
     */

@@ -76,7 +76,7 @@ class PessoaDAO extends DAO{
             
             $options['from'] = 'pessoa';
 
-            $result = $this->readSingle($options);
+            $result = $this->read($options);
 
             if(!$result)return false;
 

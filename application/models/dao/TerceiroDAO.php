@@ -25,7 +25,7 @@ class TerceiroDAO extends DAO{
                 'from' => 'terceiro'
             );
             $options = $this->_default($default, $options);
-            $result = $this->readSingle($options);
+            $result = $this->read($options);
             if(!$result) return false;
             
             $terceiro = new TerceiroModel();

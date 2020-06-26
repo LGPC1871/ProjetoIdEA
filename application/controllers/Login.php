@@ -120,7 +120,7 @@ class Login extends CI_Controller{
                 if(!$result) return "register";
             }
             //start session
-            $pessoa = $this->pessoaDAO->getUser(array('where' => array('id'=>$userExist->getId())));
+            $pessoa = $this->pessoaDAO->getUser(array('where' => array('email'=>$pessoaModel->getEmail())));
 
             if(!$pessoa)return "login";
 
@@ -222,7 +222,7 @@ class Login extends CI_Controller{
             $pessoa = $input['pessoaModel'];
 
             $this->session->set_userdata("logged", true);
-            $this->session->set_userdata("userId", $pessoa->getId());
+            $this->session->set_userdata("id", $pessoa->getId());
             $this->session->set_userdata("email", $pessoa->getEmail());
             $this->session->set_userdata("nome_completo", $pessoa->getNomeCompleto());
             $this->session->set_userdata("nome", $pessoa->getNome());
@@ -274,7 +274,7 @@ class Login extends CI_Controller{
             if(!$this->pessoaTerceiroDAO->addPessoaTerceiro($inputPessoaTerceiroDAO)){
                 $this->pessoaDAO->removeUser(array('where' => array('id' => $pessoaId)));
                 return false;
-            } 
+            }
 
             //executar método em @pessoa_privilegio com privilégio inicial padrao
             $like = array(
