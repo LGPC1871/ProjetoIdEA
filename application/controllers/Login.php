@@ -33,7 +33,6 @@ class Login extends CI_Controller{
                 ),
                 "scripts" => array(
                     'user.js', 
-                    'util.js'
                 ),
             );
             $this->template->show('login.php', $content);

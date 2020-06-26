@@ -22,7 +22,7 @@ function googleSignIn(googleUser) {
     let sendToBackEnd= function(jsonInput){
         $.ajax({
             type: "POST",
-            url: `login/ajaxLoginGoogle`,
+            url: `${BASE_URL}login/ajaxLoginGoogle`,
             dataType: "json",
             data: jsonInput,
 

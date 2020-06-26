@@ -5,4 +5,7 @@ class Main extends CI_Controller{
     public function index(){
         $this->template->show('main.php');
     }
+    public function ajaxBaseURL(){
+        echo base_url();
+    }
 }

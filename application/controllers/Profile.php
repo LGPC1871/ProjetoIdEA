@@ -69,4 +69,47 @@ class Profile extends CI_Controller{
             }
             return $content;
         }
+
+        private function loadPanel($privilegioNome){
+            if(!$this->session->userdata('logged')) return false;
+            $pessoaId = $this->session->userdata('id');
+            if(!$this->checkPrivilege($privilegioNome, $pessoaId))return false;
+            
+            return $this->load->view("restrict/profile/{$privilegioNome}.php", 1, true);
+        }
+        
+        private function checkPrivilege($privilegioNome, $pessoaId){
+            $privilegios = $this->pessoaPrivilegioDAO->getPessoaPrivilegios($pessoaId);
+            if(!$privilegios) return false;
+            foreach($privilegios as $privilegio){
+                if($privilegio->nome == $privilegioNome) return true;
+            }
+            return false;
+        }
+    /*
+    |--------------------------------------------------------------------------
+    | AJAX
+    |--------------------------------------------------------------------------
+    | Todas as funções de requisições ajax
+    */
+        /**
+         * Request TAB
+         * Essa função recebe uma requisição de conteúdo
+         * valida a requisição e gera um retorno
+         * @param POST
+         * @return HTML
+         */
+            public function ajaxRequestTab(){
+                if (
+                    !$this->input->is_ajax_request() ||
+                    !$this->session->userdata('logged')
+                ) {
+                    exit("Nenhum acesso de script direto permitido!");
+                }
+                $privilegio = $this->input->post("privilegio");
+                
+                $result = $this->loadPanel($privilegio);
+
+                echo $result;
+            }
 }

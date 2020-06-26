@@ -30,6 +30,9 @@
             <script src="<?=$hscript?>"></script>
         <?php endforeach?>
     <?php endif ?>
+    <script type="text/javascript">
+        const BASE_URL = "<?php echo base_url();?>";
+    </script>
     <!--JQuery-->
     <script type="text/javascript" src="<?=$diretorio?>vendor/components/jquery/jquery.js"></script>
     <!--Bootstrap-->
